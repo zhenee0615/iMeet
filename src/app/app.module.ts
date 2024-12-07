@@ -22,6 +22,10 @@ import { ContactUsComponent } from './Contact Us Page/contact-us/contact-us.comp
 import { FormsModule } from '@angular/forms';
 import { ContactFormComponent } from './Contact Us Page/contact-form/contact-form.component';
 import { MapComponent } from './Contact Us Page/map/map.component';
+import { LoginComponent } from './Login & Sign Up/login/login.component';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { MatDialogModule } from '@angular/material/dialog';
+import { DialogComponent } from './Contact Us Page/dialog/dialog.component';
 
 @NgModule({
   declarations: [
@@ -43,14 +47,19 @@ import { MapComponent } from './Contact Us Page/map/map.component';
     CallToActionComponent,
     ContactUsComponent,
     ContactFormComponent,
-    MapComponent
+    MapComponent,
+    LoginComponent,
+    DialogComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    MatDialogModule
   ],
-  providers: [],
+  providers: [
+    provideAnimationsAsync()
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
