@@ -1,0 +1,12 @@
+<section class="py-5">
+    <div class="container">
+      <h2 class="text-center mb-4">Meet Our Team</h2>
+      <div class="row">
+        <div *ngFor="let member of teamMembers" class="col-md-4 text-center">
+          <img [src]="member.image" [alt]="member.name" class="rounded-circle mb-3" width="150">
+          <h4>{{ member.name }}</h4>
+          <p>{{ member.role }}</p>
+        </div>
+      </div>
+    </div>
+</section>

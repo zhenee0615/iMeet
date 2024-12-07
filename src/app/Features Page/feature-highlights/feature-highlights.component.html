@@ -1,0 +1,21 @@
+<section class="py-5">
+    <div class="container">
+      <h2 class="text-center mb-5">Feature Highlights</h2>
+      <div class="row feature" *ngFor="let feature of features; let i = index">
+        <div 
+          class="col-7 d-flex justify-content-center" 
+          [ngClass]="{
+            'order-md-2 ps-md-5': i % 2 === 1,
+            'pe-md-5': i % 2 === 0
+          }"
+        >
+          <img [src]="feature.image" [alt]="feature.title" class="img-fluid rounded-4 feature-img">
+        </div>
+  
+        <div class="col-5 d-flex flex-column justify-content-center" [ngClass]="{ 'order-md-1': i % 2 === 0 }">
+          <h4>{{ feature.title }}</h4>
+          <p class="text-justify">{{ feature.description }}</p>
+        </div>
+      </div>
+    </div>
+  </section>

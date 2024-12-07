@@ -1,0 +1,11 @@
+.benefit{
+    &:nth-child(odd) {
+      padding-right: 3rem;
+      text-align: justify;
+    }
+  
+    &:nth-child(even) {
+      padding-left: 3rem;
+      text-align: justify;
+    }
+}
