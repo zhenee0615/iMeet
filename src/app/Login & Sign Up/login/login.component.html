@@ -5,7 +5,7 @@
     <div class="col-5 d-flex flex-column align-items-center justify-content-center">
       <div class="login-container px-4 py-3">
         <h1 class="font text-center">{{ isSignUpMode ? 'Sign Up' : 'Login' }}</h1>
-        <form (ngSubmit)="onSubmit()">
+        <form [formGroup]="isSignUpMode ? signUpForm : loginForm" (ngSubmit)="onSubmit()">
           <div class="form-group py-2" *ngIf="isSignUpMode">
             <label for="fullName" class="font pb-2">Full Name</label>
             <input
@@ -15,6 +15,7 @@
               name="fullName"
               placeholder="Full Name"
               class="ps-3 text-input"
+              formControlName="fullName"
               required
             />
           </div>
@@ -27,6 +28,7 @@
               name="email"
               placeholder="Email"
               class="ps-3 text-input"
+              formControlName="email"
               required
             />
           </div>
@@ -39,6 +41,7 @@
               name="password"
               placeholder="Password"
               class="ps-3 text-input"
+              formControlName="password"
               required
             />
           </div>
@@ -51,6 +54,7 @@
               name="confirmPassword"
               placeholder="Confirm Password"
               class="ps-3 text-input"
+              formControlName="confirmPassword"
               required
             />
           </div>
@@ -62,7 +66,7 @@
                 name="gender"
                 [(ngModel)]="gender"
                 value="Male"
-                required
+                formControlName="gender"
               />
               <label class="ms-2 me-4 text-light">Male</label>
               <input
@@ -71,7 +75,7 @@
                 [(ngModel)]="gender"
                 value="Female"
                 class="ms-4"
-                required
+                formControlName="gender"
               />
               <label class="ms-2 text-light">Female</label>
             </div>
@@ -85,6 +89,7 @@
               name="contactNumber"
               placeholder="Contact Number"
               class="ps-3 text-input"
+              formControlName="contactNumber"
               required
             />
           </div>

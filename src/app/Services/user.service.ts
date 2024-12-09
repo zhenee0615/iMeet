@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, collectionData, getDocs, query, where } from '@angular/fire/firestore';
+import { Firestore, addDoc, collection, collectionData, doc, docData, updateDoc } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
+import { User } from '../Models/user.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -16,14 +17,23 @@ export class UserService {
     return collectionData(userList, { idField: "id"});
   }
 
-  // async checkUser(email: string, password: string): Promise<user | null> {
-  //   const userCollection = collection(this.firestore, this.collectionName);
-  //   const q = query(userCollection, where('email', '==', email), where('password', '==', password));
-  //   const querySnapshot = await getDocs(q);
+  async createUser(data: any): Promise<void> {
+    const userCollection = collection(this.firestore, this.collectionName);
+    const { password, confirmPassword, ...userWithoutPassword } = data;
+    await addDoc(userCollection, userWithoutPassword);
+  }
 
-  //   if (!querySnapshot.empty) {
-  //     return querySnapshot.docs[0].data() as user; // Return the user data
-  //   }
-  //   return null; // No matching user
+  getUserById(id: string): Observable<any> {
+    const userDoc = doc(this.firestore, `${this.collectionName}/${id}`);
+    return docData(userDoc, { idField: "id"})
+  }
+
+  async updateUser(id: string, data: any): Promise<void> {
+    const userDoc = doc(this.firestore, this.collectionName);
+    await updateDoc(userDoc, data);
+  }
+
+  // private async deleteItem(id: string): Promise<void> {
+
   // }
 }

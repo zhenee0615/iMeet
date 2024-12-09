@@ -1,13 +1,13 @@
-@if(authService.currentUserSig() == null) {
+@if (authService.currentUserSig() == null || authService.currentUserSig() == undefined) {
     <app-header></app-header>
 }
 
-@if(authService.currentUserSig() != null) {
+@if (authService.currentUserSig() != null  || authService.currentUserSig() != undefined) {
     <button (click)="logout()">logout</button>
 }
 
 <router-outlet></router-outlet>
 
-@if(authService.currentUserSig() == null) {
+@if(authService.currentUserSig() == null  || authService.currentUserSig() == undefined) {
     <app-footer></app-footer>
 }

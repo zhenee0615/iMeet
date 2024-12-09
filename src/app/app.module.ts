@@ -18,7 +18,7 @@ import { FeatureHighlightsComponent } from './Features Page/feature-highlights/f
 import { BenefitsComponent } from './Features Page/benefits/benefits.component';
 import { CallToActionComponent } from './Features Page/call-to-action/call-to-action.component';
 import { ContactUsComponent } from './Contact Us Page/contact-us/contact-us.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ContactFormComponent } from './Contact Us Page/contact-form/contact-form.component';
 import { MapComponent } from './Contact Us Page/map/map.component';
 import { LoginComponent } from './Login & Sign Up/login/login.component';
@@ -77,7 +77,8 @@ const firebaseConfig = {
     MatDialogModule,
     // AngularFireModule.initializeApp(firebaseConfig),
     AngularFireAuthModule,
-    AngularFirestoreModule
+    AngularFirestoreModule,
+    ReactiveFormsModule
   ],
   providers: [
     provideAnimationsAsync(),
