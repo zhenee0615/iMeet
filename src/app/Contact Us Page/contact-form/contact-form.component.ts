@@ -39,7 +39,6 @@ export class ContactFormComponent {
             height: '200px',
           });
 
-          // Clear the form on success
           this.form = {
             name: '',
             email: '',

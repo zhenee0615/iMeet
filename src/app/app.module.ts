@@ -30,6 +30,9 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getDatabase, provideDatabase } from '@angular/fire/database';
+import { SignupComponent } from './Login & Sign Up/signup/signup.component';
+import { LoginStatusComponent } from './Login & Sign Up/login-status/login-status.component';
+import { getAuth, provideAuth } from '@angular/fire/auth';
 
 const firebaseConfig = {
   apiKey: "AIzaSyC1VlArwNGn7SeDNgihtVUpF9wFG0DDU3E",
@@ -64,6 +67,8 @@ const firebaseConfig = {
     MapComponent,
     LoginComponent,
     DialogComponent,
+    SignupComponent,
+    LoginStatusComponent,
   ],
   imports: [
     BrowserModule,
@@ -79,7 +84,9 @@ const firebaseConfig = {
     provideFirebaseApp(() => initializeApp(firebaseConfig)),
     provideFirestore(() => getFirestore()),
     provideDatabase(() => getDatabase()),
+    provideAuth(() => getAuth())
   ],
   bootstrap: [AppComponent]
 })
+
 export class AppModule { }
