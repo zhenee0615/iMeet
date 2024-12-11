@@ -67,10 +67,10 @@ section {
             }
 
             input:-webkit-autofill {
-                box-shadow: 0 0 0px 1000px white inset; /* Change white to your desired background color */
-                -webkit-box-shadow: 0 0 0px 1000px white inset; /* For WebKit browsers */
-                -webkit-text-fill-color: black; /* Text color inside the input */
-                transition: background-color 5000s ease-in-out 0s; /* Prevent flashing during autofill */
+                box-shadow: 0 0 0px 1000px white inset;
+                -webkit-box-shadow: 0 0 0px 1000px white inset; 
+                -webkit-text-fill-color: black; 
+                transition: background-color 5000s ease-in-out 0s; 
             }
         }
     

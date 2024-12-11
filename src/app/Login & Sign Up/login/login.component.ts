@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { UserService } from '../../Services/user.service';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
@@ -11,8 +11,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
   selector: 'app-login',
   standalone: false,
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrl: './login.component.scss'
 })
 
 export class LoginComponent {
@@ -119,14 +118,6 @@ export class LoginComponent {
         message: message,
       },
     });
-  }
-
-  onForgotPassword() {
-
-  }
-
-  onGoogleLogin() {
-
   }
 
   onSignUp() {
