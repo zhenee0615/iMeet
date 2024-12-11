@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { UserService } from '../../Services/user.service';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
@@ -11,7 +11,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
   selector: 'app-login',
   standalone: false,
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  styleUrl: './login.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class LoginComponent {
@@ -24,6 +25,8 @@ export class LoginComponent {
   contactNumber: string = '';
   errorMessage: string = '';
   isSignUpMode: boolean = false; 
+  hidePassword = true;
+  hideConfirmPassword = true;
   loginForm: FormGroup;
   signUpForm: FormGroup;
   private userService = inject(UserService);
@@ -37,10 +40,7 @@ export class LoginComponent {
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [
         Validators.required,
-        Validators.minLength(6),
-        Validators.pattern(
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{6,}$/
-        ),
+        Validators.minLength(6)
       ]),
     });
 
@@ -86,8 +86,10 @@ export class LoginComponent {
       next: () => {
         const dialogRef = this.showLoginStatus('Login Successful', 'You have successfully logged in!');
         dialogRef.afterClosed().subscribe(() => {
-          this.router.navigateByUrl('/');
+          this.router.navigateByUrl('/').then(() => {
+            window.location.reload();
           });
+        });
       },
       error: () => {
         this.showLoginStatus('Login Failed', 'Invalid email or password. Please try again!');
@@ -129,18 +131,19 @@ export class LoginComponent {
 
   onSignUp() {
     if (this.validateForm()) {
-      this.authService.register(this.email, this.fullName, this.password).subscribe({
+      const { fullName, email, password } = this.signUpForm.value
+      this.authService.register(email, fullName, password).subscribe({
         next: () => {
           this.userService.createUser(this.signUpForm.value);
           this.showLoginStatus('Sign Up Successful', 'You have successfully sign up an account!');
-          this.toggleMode();
-          this.router.navigateByUrl('/login');
+          this.signUpForm.reset(); 
         }, 
         error: () => {
           this.showLoginStatus('Sign Up Failed', 'An error occurred during sign-up. Please try again.');
         }
       });
     }
+    this.toggleMode();
   }
 
   toggleMode() {
@@ -150,7 +153,8 @@ export class LoginComponent {
 
   validateForm(): boolean {
     if (this.isSignUpMode) {
-      if (!this.fullName || !this.email || !this.password || !this.confirmPassword || !this.gender || !this.contactNumber) {
+      const { fullName, email, password, confirmPassword, gender, contactNumber } = this.signUpForm.value
+      if (!fullName || !email || !password || !confirmPassword || !gender || !contactNumber) {
         this.showLoginStatus('Validation Error', 'All fields are required. Please fill in all fields.');
         return false;
       }
@@ -215,6 +219,14 @@ export class LoginComponent {
 
   getPassword() {
     return this.loginForm.get('password');
+  }
+
+  togglePasswordVisibility() {
+    this.hidePassword = !this.hidePassword;
+  }
+
+  toggleConfirmPasswordVisibility() {
+    this.hideConfirmPassword = !this.hideConfirmPassword;
   }
 }
 

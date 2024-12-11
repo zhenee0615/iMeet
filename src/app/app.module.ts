@@ -32,6 +32,11 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getDatabase, provideDatabase } from '@angular/fire/database';
 import { LoginStatusComponent } from './Login & Sign Up/login-status/login-status.component';
 import { getAuth, provideAuth } from '@angular/fire/auth';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatInputModule } from '@angular/material/input';
+import { RouterModule } from '@angular/router';
 
 const firebaseConfig = {
   apiKey: "AIzaSyC1VlArwNGn7SeDNgihtVUpF9wFG0DDU3E",
@@ -76,7 +81,11 @@ const firebaseConfig = {
     // AngularFireModule.initializeApp(firebaseConfig),
     AngularFireAuthModule,
     AngularFirestoreModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatRadioModule,
+    MatInputModule,
   ],
   providers: [
     provideAnimationsAsync(),

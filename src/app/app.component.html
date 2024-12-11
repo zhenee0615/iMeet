@@ -1,16 +1,19 @@
 @defer {
-  @if (authService.currentUserSig() == null || authService.currentUserSig() == undefined) {
+  <div *ngIf="!isLoggedIn">
     <app-header></app-header>
-  }
-  @if (authService.currentUserSig() != null || authService.currentUserSig() != undefined) {
+  </div>
+  <!-- @if (authService.currentUserSig() != null || authService.currentUserSig() != undefined) {
     <button (click)="logout()">logout</button>
-  }
+  } -->
+  <div *ngIf="isLoggedIn">
+    <button (click)="logout()">logout</button>
+  </div>
 
   <router-outlet></router-outlet>
 
-  @if(authService.currentUserSig() == null || authService.currentUserSig() == undefined) {
+  <div *ngIf="!isLoggedIn">
     <app-footer></app-footer>
-  }
+  </div>
 }
 @loading (minimum 1s) {
   <div class="loading-container">
