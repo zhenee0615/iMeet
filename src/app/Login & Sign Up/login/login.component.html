@@ -1,103 +1,61 @@
 <section>
-  <img class="background-image" src="login_bg.jpeg" alt="Background">
   <div class="row p-5">
-    <div class="col-7"></div>
-    <div class="col-5 d-flex flex-column align-items-center justify-content-center">
+    <div class="col-8 left-panel">
+		<img [src]="isSignUpMode ? 'signup_bg.jpg' : 'login_bg.jpeg'" class="w-100">
+	</div>
+    <div class="col-4">
       <div class="login-container px-4 py-3">
-        <h1 class="font text-center">{{ isSignUpMode ? 'Sign Up' : 'Login' }}</h1>
+        <h1 class="font text-center">
+          {{ isSignUpMode ? "Sign Up" : "Login" }}
+        </h1>
         <form [formGroup]="isSignUpMode ? signUpForm : loginForm" (ngSubmit)="onSubmit()">
-          <div class="form-group py-2" *ngIf="isSignUpMode">
+          <div class="form-group py-2 mb-1" *ngIf="isSignUpMode">
             <label for="fullName" class="font pb-2">Full Name</label>
-            <input
-              type="text"
-              id="fullName"
-              [(ngModel)]="fullName"
-              name="fullName"
-              placeholder="Full Name"
-              class="ps-3 text-input"
-              formControlName="fullName"
-              required
-            />
+            <input type="text" id="fullName" [(ngModel)]="fullName" name="fullName" placeholder="Full Name"
+              class="ps-3 text-input" formControlName="fullName" required />
           </div>
-          <div class="form-group py-2">
+          <div class="form-group py-2 mb-1">
             <label for="email" class="font pb-2">Email</label>
-            <input
-              type="email"
-              id="email"
-              [(ngModel)]="email"
-              name="email"
-              placeholder="Email"
-              class="ps-3 text-input"
-              formControlName="email"
-              required
-            />
+            <input type="email" id="email" [(ngModel)]="email" name="email" placeholder="Email" class="ps-3 text-input"
+              formControlName="email" required />
           </div>
-          <div class="form-group py-2">
+          <div class="form-group py-2 mb-1">
             <label for="password" class="font pb-2">Password</label>
-            <input
-              type="password"
-              id="password"
-              [(ngModel)]="password"
-              name="password"
-              placeholder="Password"
-              class="ps-3 text-input"
-              formControlName="password"
-              required
-            />
+            <input type="password" id="password" [(ngModel)]="password" name="password" placeholder="Password"
+              class="ps-3 text-input" formControlName="password" required />
           </div>
-          <div class="form-group py-2" *ngIf="isSignUpMode">
+          <div class="form-group py-2 mb-1" *ngIf="isSignUpMode">
             <label for="confirmPassword" class="font pb-2">Confirm Password</label>
-            <input
-              type="password"
-              id="confirmPassword"
-              [(ngModel)]="confirmPassword"
-              name="confirmPassword"
-              placeholder="Confirm Password"
-              class="ps-3 text-input"
-              formControlName="confirmPassword"
-              required
-            />
+            <input type="password" id="confirmPassword" [(ngModel)]="confirmPassword" name="confirmPassword"
+              placeholder="Confirm Password" class="ps-3 text-input" formControlName="confirmPassword" required />
           </div>
-          <div class="form-group py-2" *ngIf="isSignUpMode">
+          <div class="form-group py-2 mb-1" *ngIf="isSignUpMode">
             <label class="font pb-2">Gender</label>
             <div class="">
-              <input
-                type="radio"
-                name="gender"
-                [(ngModel)]="gender"
-                value="Male"
-                formControlName="gender"
-              />
+              <input type="radio" name="gender" [(ngModel)]="gender" value="Male" formControlName="gender" />
               <label class="ms-2 me-4 text-light">Male</label>
-              <input
-                type="radio"
-                name="gender"
-                [(ngModel)]="gender"
-                value="Female"
-                class="ms-4"
-                formControlName="gender"
-              />
+              <input type="radio" name="gender" [(ngModel)]="gender" value="Female" class="ms-4"
+                formControlName="gender" />
               <label class="ms-2 text-light">Female</label>
             </div>
           </div>
-          <div class="form-group py-2" *ngIf="isSignUpMode">
+          <div class="form-group py-2 mb-2" *ngIf="isSignUpMode">
             <label for="contactNumber" class="font pb-2">Contact Number</label>
-            <input
-              type="text"
-              id="contactNumber"
-              [(ngModel)]="contactNumber"
-              name="contactNumber"
-              placeholder="Contact Number"
-              class="ps-3 text-input"
-              formControlName="contactNumber"
-              required
-            />
+            <input type="text" id="contactNumber" [(ngModel)]="contactNumber" name="contactNumber"
+              placeholder="Contact Number" class="ps-3 text-input" formControlName="contactNumber" required />
           </div>
-          <button type="submit" class="mb-2">{{ isSignUpMode ? 'Sign Up' : 'Login' }}</button>
+          <a (click)="resetPassword()" *ngIf="!isSignUpMode" class="forgot-password pt-2 pb-3 d-inline-block text-end w-100">Forgot Password?</a>
+          <button type="submit" class="mb-2">
+            {{ isSignUpMode ? "Sign Up" : "Login" }}
+          </button>
         </form>
         <p class="d-flex flex-row py-2 mb-0 text-light">
-          {{ isSignUpMode ? 'Already have an account?' : "Don't have an account?" }}&#160;
-          <a (click)="toggleMode()">{{ isSignUpMode ? 'Login' : 'Sign Up' }}</a>
+          {{
+          isSignUpMode
+          ? "Already have an account?"
+          : "Don't have an account?"
+          }}&#160;
+          <a (click)="toggleMode()">{{ isSignUpMode ? "Login" : "Sign Up Now" }}</a>
         </p>
       </div>
     </div>

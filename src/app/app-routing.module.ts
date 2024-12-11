@@ -5,11 +5,9 @@ import { AboutUsComponent } from './About Us Page/about-us/about-us.component';
 import { FeaturesPageComponent } from './Features Page/features-page/features-page.component';
 import { ContactUsComponent } from './Contact Us Page/contact-us/contact-us.component';
 import { LoginComponent } from './Login & Sign Up/login/login.component';
-import { SignupComponent } from './Login & Sign Up/signup/signup.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
-  { path: 'signup', component: SignupComponent },
   { path: 'about-us', component: AboutUsComponent },
   { path: 'features', component: FeaturesPageComponent },
   { path: 'contact-us', component: ContactUsComponent },

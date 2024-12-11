@@ -1,4 +1,4 @@
-import { importProvidersFrom, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -30,7 +30,6 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getDatabase, provideDatabase } from '@angular/fire/database';
-import { SignupComponent } from './Login & Sign Up/signup/signup.component';
 import { LoginStatusComponent } from './Login & Sign Up/login-status/login-status.component';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 
@@ -67,7 +66,6 @@ const firebaseConfig = {
     MapComponent,
     LoginComponent,
     DialogComponent,
-    SignupComponent,
     LoginStatusComponent,
   ],
   imports: [

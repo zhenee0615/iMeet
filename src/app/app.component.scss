@@ -1,0 +1,11 @@
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.loading-icon {
+    width: 15vw;
+    object-fit: contain;
+}

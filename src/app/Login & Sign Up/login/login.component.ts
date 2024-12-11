@@ -93,6 +93,20 @@ export class LoginComponent {
         this.showLoginStatus('Login Failed', 'Invalid email or password. Please try again!');
       }
     });
+  };
+
+  async resetPassword() {
+    const { email } = this.loginForm.value;
+    if (email) {
+      try {
+        await this.authService.resetPassword(email);
+        this.showLoginStatus('Email Sent', 'A password reset email have been sent. Please check your inbox. ');
+      } catch(err: any){
+        this.showLoginStatus('Error', 'An error occured, please try again later. ');
+      }
+    } else {
+      this.showLoginStatus('Error', 'Please enter your email to reset the password. ');
+    }
   }
 
   showLoginStatus(title: string, message: string) {

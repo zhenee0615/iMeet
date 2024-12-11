@@ -1,13 +1,35 @@
-@if (authService.currentUserSig() == null || authService.currentUserSig() == undefined) {
+@defer {
+  @if (authService.currentUserSig() == null || authService.currentUserSig() == undefined) {
     <app-header></app-header>
-}
-
-@if (authService.currentUserSig() != null  || authService.currentUserSig() != undefined) {
+  }
+  @if (authService.currentUserSig() != null || authService.currentUserSig() != undefined) {
     <button (click)="logout()">logout</button>
-}
+  }
 
-<router-outlet></router-outlet>
+  <router-outlet></router-outlet>
 
-@if(authService.currentUserSig() == null  || authService.currentUserSig() == undefined) {
+  @if(authService.currentUserSig() == null || authService.currentUserSig() == undefined) {
     <app-footer></app-footer>
+  }
 }
+@loading (minimum 1s) {
+  <div class="loading-container">
+    <img class="loading-icon" alt="loading..." src="loading.gif" />
+  </div>
+}
+
+<!-- <div *ngIf="authService.loading(); else appContent">
+    <p>Loading...</p>
+</div>
+
+<ng-template #appContent>
+  <app-header *ngIf="!authService.currentUserSig()"></app-header>
+
+  <div *ngIf="authService.currentUserSig()">
+    <button (click)="authService.logout()">Logout</button>
+  </div>
+
+  <router-outlet></router-outlet>
+
+  <app-footer *ngIf="!authService.currentUserSig()"></app-footer>
+</ng-template> -->
