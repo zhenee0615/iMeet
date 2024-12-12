@@ -85,9 +85,13 @@ export class LoginComponent {
       next: () => {
         const dialogRef = this.showLoginStatus('Login Successful', 'You have successfully logged in!');
         dialogRef.afterClosed().subscribe(() => {
-          this.router.navigateByUrl('/').then(() => {
-            window.location.reload();
-          });
+          const storedUser = localStorage.getItem('currentUser');
+          if (storedUser) {
+            const userData = JSON.parse(storedUser);
+            this.router.navigate(['/user', userData.uid]).then(() => {
+              window.location.reload();
+            });
+          }
         });
       },
       error: () => {

@@ -1,6 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { AuthService } from './Services/auth.service';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -13,10 +12,7 @@ export class AppComponent {
   authService = inject(AuthService);
   isLoggedIn: boolean = false;
 
-  constructor(private _route: ActivatedRoute) {
-    this._route.url.subscribe(url => {
-        // Your action/function will go here
-    });
+  constructor() {
     const storedUser = localStorage.getItem('currentUser');
     // if (storedUser) {
     //   this.isLoggedIn = true;

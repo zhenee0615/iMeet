@@ -36,7 +36,16 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatInputModule } from '@angular/material/input';
-import { RouterModule } from '@angular/router';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
+import { UserPortalComponent } from './User Portal/user-portal/user-portal.component';
+import { SidePanelComponent } from './User Portal/side-panel/side-panel.component';
+import { UserHeaderComponent } from './User Portal/user-header/user-header.component';
+import { DashboardComponent } from './User Portal/Dashboard/dashboard/dashboard.component';
+import { ProfileComponent } from './User Portal/Dashboard/profile/profile.component';
+import { ScheduleComponent } from './User Portal/Dashboard/schedule/schedule.component';
 
 const firebaseConfig = {
   apiKey: "AIzaSyC1VlArwNGn7SeDNgihtVUpF9wFG0DDU3E",
@@ -72,13 +81,18 @@ const firebaseConfig = {
     LoginComponent,
     DialogComponent,
     LoginStatusComponent,
+    UserPortalComponent,
+    SidePanelComponent,
+    UserHeaderComponent,
+    DashboardComponent,
+    ProfileComponent,
+    ScheduleComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     MatDialogModule,
-    // AngularFireModule.initializeApp(firebaseConfig),
     AngularFireAuthModule,
     AngularFirestoreModule,
     ReactiveFormsModule,
@@ -86,6 +100,10 @@ const firebaseConfig = {
     MatIconModule,
     MatRadioModule,
     MatInputModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatSidenavModule,
+    MatListModule,
   ],
   providers: [
     provideAnimationsAsync(),

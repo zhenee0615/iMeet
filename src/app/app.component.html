@@ -5,9 +5,6 @@
   <!-- @if (authService.currentUserSig() != null || authService.currentUserSig() != undefined) {
     <button (click)="logout()">logout</button>
   } -->
-  <div *ngIf="isLoggedIn">
-    <button (click)="logout()">logout</button>
-  </div>
 
   <router-outlet></router-outlet>
 

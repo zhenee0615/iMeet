@@ -5,12 +5,27 @@ import { AboutUsComponent } from './About Us Page/about-us/about-us.component';
 import { FeaturesPageComponent } from './Features Page/features-page/features-page.component';
 import { ContactUsComponent } from './Contact Us Page/contact-us/contact-us.component';
 import { LoginComponent } from './Login & Sign Up/login/login.component';
+import { UserPortalComponent } from './User Portal/user-portal/user-portal.component';
+import { DashboardComponent } from './User Portal/Dashboard/dashboard/dashboard.component';
+import { ProfileComponent } from './User Portal/Dashboard/profile/profile.component';
+import { ScheduleComponent } from './User Portal/Dashboard/schedule/schedule.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'about-us', component: AboutUsComponent },
   { path: 'features', component: FeaturesPageComponent },
   { path: 'contact-us', component: ContactUsComponent },
+  {
+    path: 'user/:uid',
+    component: UserPortalComponent,
+    children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'dashboard', component: DashboardComponent },
+      { path: 'profile', component: ProfileComponent },
+      { path: 'schedule', component: ScheduleComponent },
+    ],
+  },
+  { path: 'dashboard', component: DashboardComponent },
   { path: '', component: MainpageComponent },
   { path: '', redirectTo: '/mainpage', pathMatch: 'full' },
   { path: '**', redirectTo: '/mainpage' }
