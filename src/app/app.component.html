@@ -1,35 +1,16 @@
 @defer {
-  <div *ngIf="!isLoggedIn">
+  <div *ngIf="isLoginPage() || !user">
     <app-header></app-header>
   </div>
-  <!-- @if (authService.currentUserSig() != null || authService.currentUserSig() != undefined) {
-    <button (click)="logout()">logout</button>
-  } -->
 
   <router-outlet></router-outlet>
 
-  <div *ngIf="!isLoggedIn">
+  <div *ngIf="isLoginPage() || !user">
     <app-footer></app-footer>
   </div>
 }
-@loading (minimum 1s) {
+@loading (minimum 0.1s) {
   <div class="loading-container">
     <img class="loading-icon" alt="loading..." src="loading.gif" />
   </div>
 }
-
-<!-- <div *ngIf="authService.loading(); else appContent">
-    <p>Loading...</p>
-</div>
-
-<ng-template #appContent>
-  <app-header *ngIf="!authService.currentUserSig()"></app-header>
-
-  <div *ngIf="authService.currentUserSig()">
-    <button (click)="authService.logout()">Logout</button>
-  </div>
-
-  <router-outlet></router-outlet>
-
-  <app-footer *ngIf="!authService.currentUserSig()"></app-footer>
-</ng-template> -->

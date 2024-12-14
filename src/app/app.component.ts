@@ -1,5 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { AuthService } from './Services/auth.service';
+import { Component, OnInit } from '@angular/core';
+import { User } from './Models/user.interface';
+import { UserService } from './Services/user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -7,23 +9,19 @@ import { AuthService } from './Services/auth.service';
   standalone: false,
   styleUrl: './app.component.scss'
 })
-  
-export class AppComponent {
-  authService = inject(AuthService);
-  isLoggedIn: boolean = false;
 
-  constructor() {
-    const storedUser = localStorage.getItem('currentUser');
-    // if (storedUser) {
-    //   this.isLoggedIn = true;
-    // } else {
-    //   this.isLoggedIn = false;
-    // }
-    this.isLoggedIn = !!storedUser;
-    // console.log(this.isLoggedIn);
+export class AppComponent implements OnInit {
+  user: User | null = null;
+
+  constructor(private userService: UserService, private router: Router) {}
+
+  ngOnInit(): void {
+    this.userService.getUserSignal().subscribe(() => {
+      this.user = this.userService.getUser()!;
+    });
   }
 
-  logout(): void {
-    this.authService.logout();
+  isLoginPage(): boolean {
+    return this.router.url === '/login';
   }
 }

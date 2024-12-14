@@ -19,8 +19,8 @@ const routes: Routes = [
     path: 'user/:uid',
     component: UserPortalComponent,
     children: [
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'dashboard', component: DashboardComponent },
+      { path: '', redirectTo: 'group', pathMatch: 'full' },
+      { path: 'group', component: DashboardComponent },
       { path: 'profile', component: ProfileComponent },
       { path: 'schedule', component: ScheduleComponent },
     ],

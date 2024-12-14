@@ -5,6 +5,7 @@ import { map, shareReplay } from 'rxjs/operators';
 import { User } from '../../Models/user.interface';
 import { AuthService } from '../../Services/auth.service';
 import { Router } from '@angular/router';
+import { UserService } from '../../Services/user.service';
 
 interface MenuItem {
   name: string;
@@ -21,50 +22,53 @@ interface MenuItem {
 })
 
 export class SidePanelComponent {
-  hoveredIndex: number = -1;
   isHandset$: Observable<boolean>;
   userData: User | null = null;
   authService = inject(AuthService);
   items: MenuItem[] = [];
-  
 
-  constructor(private breakpointObserver: BreakpointObserver, private router: Router) {
+  constructor(private breakpointObserver: BreakpointObserver, private router: Router, private userService: UserService) {
     this.isHandset$ = this.breakpointObserver.observe(Breakpoints.Handset)
       .pipe(
         map(result => result.matches),
         shareReplay()
     );
-    const storedUser = localStorage.getItem('currentUser');
-    if (storedUser) {
-      this.userData = JSON.parse(storedUser);
-    }
-    this.items = [
-      {
-        name: 'Dashboard',
-        route: `/user/${this.userData?.uid}/dashboard`,
-        defaultImage: 'dashboard_icon.png',
-        activeImage: 'dashboard_icon_hover.png',
-      },
-      {
-        name: 'Calendar',
-        route: `/user/${this.userData?.uid}/schedule`,
-        defaultImage: 'calendar_icon.png',
-        activeImage: 'calendar_icon_hover.png',
-      },
-      {
-        name: 'Profile',
-        route: `/user/${this.userData?.uid}/profile`,
-        defaultImage: 'profile_icon.png',
-        activeImage: 'profile_icon_hover.png',
-      },
-    ];
-  }  
+  }
+
+  ngOnInit() {
+    this.userService.getUserSignal().subscribe((user) => {
+      this.userData = user;
+      if (this.userData) {
+        this.items = [
+          {
+            name: 'Group',
+            route: `/user/${this.userData.uid}/group`,
+            defaultImage: 'group_icon.png',
+            activeImage: 'group_icon_hover.png',
+          },
+          {
+            name: 'Calendar',
+            route: `/user/${this.userData.uid}/schedule`,
+            defaultImage: 'calendar_icon.png',
+            activeImage: 'calendar_icon_hover.png',
+          },
+          {
+            name: 'Profile',
+            route: `/user/${this.userData.uid}/profile`,
+            defaultImage: 'profile_icon.png',
+            activeImage: 'profile_icon_hover.png',
+          },
+        ];
+      }
+    });
+  }
 
   isRouteActive(route: string): boolean {
     return this.router.url === route;
   }
 
   logout(): void {
+    localStorage.removeItem('hasLoggedIn');
     this.authService.logout();
   }
 }

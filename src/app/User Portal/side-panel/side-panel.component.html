@@ -1,25 +1,9 @@
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav #drawer class="sidenav" fixedInViewport
-      [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+  <mat-sidenav #drawer class="sidenav"
       [mode]="(isHandset$ | async) ? 'over' : 'side'"
-      [opened]="(isHandset$ | async) === false">
+      [opened]="(isHandset$ | async) === false"
+      [fixedInViewport]="false">
     <mat-nav-list>
-      <!-- <a mat-list-item class="nav-item"
-        (mouseenter)="hoveredIndex = 0" 
-        (mouseleave)="hoveredIndex = -1"
-        routerLink="userData ? '/user/' + userData.uid + '/dashboard' : '/'"
-        routerLinkActive="active"
-        disableRipple
-      >
-        <img
-        [src]="isRouteActive(item.route) ? 'dashboard_icon_hover.png' : 'dashboard_icon.png'"
-        alt="Dashboard Icon"
-        class="nav-icon"
-        />
-        <span>Dashboard</span>
-      </a>
-      <a mat-list-item href="#">Link 2</a>
-      <a mat-list-item href="#">Link 3</a> -->
         <div class="nav-section">
             <div class="flex-grow-1">
                 <mat-list-item
@@ -42,12 +26,9 @@
             </mat-list-item>
         </div>
     </mat-nav-list>
-    <!-- <div>
-        <button (click)="logout()">logout</button>
-    </div> -->
   </mat-sidenav>
-  <mat-sidenav-content>
-    <mat-toolbar color="primary">
+  <mat-sidenav-content autosize="true">
+    <mat-toolbar>
       @if (isHandset$ | async) {
         <button
           type="button"
@@ -58,7 +39,7 @@
         </button>
       }
       <app-user-header></app-user-header>
-      <router-outlet></router-outlet>
     </mat-toolbar>
+    <router-outlet></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>

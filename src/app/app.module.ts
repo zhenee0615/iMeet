@@ -30,7 +30,6 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getDatabase, provideDatabase } from '@angular/fire/database';
-import { LoginStatusComponent } from './Login & Sign Up/login-status/login-status.component';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -46,16 +45,7 @@ import { UserHeaderComponent } from './User Portal/user-header/user-header.compo
 import { DashboardComponent } from './User Portal/Dashboard/dashboard/dashboard.component';
 import { ProfileComponent } from './User Portal/Dashboard/profile/profile.component';
 import { ScheduleComponent } from './User Portal/Dashboard/schedule/schedule.component';
-
-const firebaseConfig = {
-  apiKey: "AIzaSyC1VlArwNGn7SeDNgihtVUpF9wFG0DDU3E",
-  authDomain: "imeetproject.firebaseapp.com",
-  projectId: "imeetproject",
-  storageBucket: "imeetproject.firebasestorage.app",
-  messagingSenderId: "380268675238",
-  appId: "1:380268675238:web:945419d9d33567e7c23467",
-  measurementId: "G-82CVB0ZMTB"
-};
+import { environment } from '../environments/environment.development';
 
 @NgModule({
   declarations: [
@@ -80,7 +70,6 @@ const firebaseConfig = {
     MapComponent,
     LoginComponent,
     DialogComponent,
-    LoginStatusComponent,
     UserPortalComponent,
     SidePanelComponent,
     UserHeaderComponent,
@@ -107,7 +96,7 @@ const firebaseConfig = {
   ],
   providers: [
     provideAnimationsAsync(),
-    provideFirebaseApp(() => initializeApp(firebaseConfig)),
+    provideFirebaseApp(() => initializeApp(environment)),
     provideFirestore(() => getFirestore()),
     provideDatabase(() => getDatabase()),
     provideAuth(() => getAuth())

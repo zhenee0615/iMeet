@@ -1,5 +1,26 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
 .row {
     --bs-gutter-x: 0;
+}
+
+.default-snackbar.mat-mdc-snack-bar-container .mat-mdc-snackbar-surface{
+  background-color: #333;
+  color: #fff !important;
+}
+
+.success-snackbar.mat-mdc-snack-bar-container .mat-mdc-snackbar-surface{
+  background-color: #47a34a !important;
+  color: white !important;
+}
+
+.error-snackbar.mat-mdc-snack-bar-container .mat-mdc-snackbar-surface{
+  background-color: #d83c31; 
+  color: white;
+}
+
+.mat-mdc-snack-bar-label {
+  display: flex;
+  justify-content: center;
 }

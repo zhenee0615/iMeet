@@ -1,11 +1,13 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { UserService } from '../../Services/user.service';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { LoginStatusComponent } from '../login-status/login-status.component';
 import { AuthService } from '../../Services/auth.service';
 import { User } from '../../Models/user.interface';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { firstValueFrom } from 'rxjs';
+import { NotificationService } from '../../Services/notification.service';
 
 @Component({
   selector: 'app-login',
@@ -24,16 +26,19 @@ export class LoginComponent {
   contactNumber: string = '';
   errorMessage: string = '';
   isSignUpMode: boolean = false; 
-  hidePassword = true;
-  hideConfirmPassword = true;
+  hidePassword: boolean = true;
+  hideConfirmPassword: boolean = true;
   loginForm: FormGroup;
   signUpForm: FormGroup;
+  user: User | null = null;
   private userService = inject(UserService);
   private authService = inject(AuthService);
+  private notificationService = inject(NotificationService);
 
   constructor(
     private router: Router, 
     private dialog: MatDialog,
+    private snackBar: MatSnackBar
   ) {
     this.loginForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email]),
@@ -62,7 +67,6 @@ export class LoginComponent {
     });
 
     this.userService.getUsers().subscribe((data: any[]) => {
-      console.log('Fetched users:', data);
       this.userList = data;
     });
   }
@@ -78,26 +82,24 @@ export class LoginComponent {
   async onLogin() {
     const { email, password } = this.loginForm.value;
     if (!this.email || !this.password) {
-      this.showLoginStatus('Login Failed', 'Email and password are required. Please try again!');
+      this.notificationService.showNotification("Email and password are required. Please try again.", 'error-snackbar');
       return;
     }
-    this.authService.login(email, password).subscribe({
-      next: () => {
-        const dialogRef = this.showLoginStatus('Login Successful', 'You have successfully logged in!');
-        dialogRef.afterClosed().subscribe(() => {
-          const storedUser = localStorage.getItem('currentUser');
-          if (storedUser) {
-            const userData = JSON.parse(storedUser);
-            this.router.navigate(['/user', userData.uid]).then(() => {
-              window.location.reload();
-            });
-          }
-        });
-      },
-      error: () => {
-        this.showLoginStatus('Login Failed', 'Invalid email or password. Please try again!');
+    try {
+      await firstValueFrom(this.authService.login(email, password));
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      const user = await firstValueFrom(this.userService.getUserSignal());
+
+      if (user) {
+        await this.router.navigate(['/user', user.uid]);
+        window.location.reload();
+      } else {
+        this.notificationService.showNotification("Unable to retrieve user data. Please try logging in again.", 'error-snackbar');
       }
-    });
+    } catch (error) {
+      this.notificationService.showNotification("Invalid email or password. Please try again.", 'error-snackbar');
+    }
   };
 
   async resetPassword() {
@@ -105,40 +107,36 @@ export class LoginComponent {
     if (email) {
       try {
         await this.authService.resetPassword(email);
-        this.showLoginStatus('Email Sent', 'A password reset email have been sent. Please check your inbox. ');
-      } catch(err: any){
-        this.showLoginStatus('Error', 'An error occured, please try again later. ');
+        this.notificationService.showNotification("A password reset email have been sent to your inbox.", 'success-snackbar');
+      } catch (err: any) {
+        this.notificationService.showNotification("An error occured, please try again later.", 'error-snackbar');
       }
     } else {
-      this.showLoginStatus('Error', 'Please enter your email to reset the password. ');
+      this.notificationService.showNotification("Please enter your email to reset the password.", 'error-snackbar');
     }
-  }
-
-  showLoginStatus(title: string, message: string) {
-    return this.dialog.open(LoginStatusComponent, {
-      width: '400px',
-      data: {
-        title: title,
-        message: message,
-      },
-    });
   }
 
   onSignUp() {
     if (this.validateForm()) {
-      const { fullName, email, password } = this.signUpForm.value
+      const { fullName, email, password } = this.signUpForm.value;
       this.authService.register(email, fullName, password).subscribe({
-        next: () => {
-          this.userService.createUser(this.signUpForm.value);
-          this.showLoginStatus('Sign Up Successful', 'You have successfully sign up an account!');
-          this.signUpForm.reset(); 
+        next: (uid) => {
+          const userData = { ...this.signUpForm.value, uid };
+          this.userService.createUser(userData);
+          this.notificationService.showNotification("You have successfully sign up an account.", 'success-snackbar');
+          this.userService.clearUser();
+          this.toggleMode();
         }, 
-        error: () => {
-          this.showLoginStatus('Sign Up Failed', 'An error occurred during sign-up. Please try again.');
+        error: (error) => {
+          console.log(error)
+          if (error.code === 'auth/email-already-in-use') {
+            this.notificationService.showNotification("This email have been used. Please try another.", 'error-snackbar');
+          } else {
+            this.notificationService.showNotification("An error occurred during sign-up. Please try again.", 'error-snackbar');
+          }
         }
       });
     }
-    this.toggleMode();
   }
 
   toggleMode() {
@@ -150,30 +148,27 @@ export class LoginComponent {
     if (this.isSignUpMode) {
       const { fullName, email, password, confirmPassword, gender, contactNumber } = this.signUpForm.value
       if (!fullName || !email || !password || !confirmPassword || !gender || !contactNumber) {
-        this.showLoginStatus('Validation Error', 'All fields are required. Please fill in all fields.');
+        this.notificationService.showNotification("All fields are required. Please fill in all fields.", 'error-snackbar');
         return false;
       }
 
       if (!this.validateEmail()) {
-        this.showLoginStatus('Validation Error', 'Invalid email format. Please enter a valid email.');
+        this.notificationService.showNotification("Invalid email format. Please enter a valid email.", 'error-snackbar');
         return false;
       }
 
       if (!this.validatePassword()) {
-        this.showLoginStatus(
-          'Validation Error',
-          'Password must be at least 6 characters long and include at least one uppercase letter, one lowercase letter, one digit, and one special symbol.'
-        );
+        this.notificationService.showNotification("Password must be at least 6 characters, include at least 1 uppercase letter, 1 lowercase letter, 1 digit and 1 special symbol.", 'error-snackbar');
         return false;
       }
 
       if (!this.validateConfirmPassword()) {
-        this.showLoginStatus('Validation Error', 'Passwords do not match. Please try again.');
+        this.notificationService.showNotification("Passwords do not match. Please try again.", 'error-snackbar');
         return false;
       }
 
       if (!this.validateContactNumber()) {
-        this.showLoginStatus('Validation Error', 'Contact number must contain only digits.');
+        this.notificationService.showNotification("Contact number must contain only digits.", 'error-snackbar');
         return false;
       }
     }

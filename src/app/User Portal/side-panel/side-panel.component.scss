@@ -5,80 +5,63 @@
 
     .mat-drawer {
         border-radius: 0;
+        border: none;
     }
 
-    mat-nav-list {
-        padding: 0;
-        // position: relative;
+    .sidenav {
+        width: fit-content;
+        background-color: rgb(223, 223, 223);
 
-        // .logout-container {
-        //     position: absolute;
-        //     bottom: 0;
-        // }
-    }
-}
+        mat-nav-list {
+            padding: 0;
 
-.sidenav {
-    width: fit-content;
-    background-color: rgb(223, 223, 223);
+            .nav-section {
+                display: flex;
+                flex-direction: column;
+                height: 100vh;
+            }
 
-    .mdc-list-item.mdc-list-item--with-one-line {
-        height: min-content;
-    }
+            mat-list-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                padding: 1rem 0.5rem;
+                transition: transform 0.3s ease;
 
-    mat-list-item {
-        padding: 1rem 0.5rem;
-    }
+                .nav-icon, .logout-icon {
+                    width: 24px;
+                    height: 24px;
+                    transition: transform 0.3s ease, filter 0.3s ease;
+                }
 
-    .mat-mdc-nav-list .mat-mdc-list-item {
-        border-radius: 0;
-    }
+                span {
+                    font-size: 0.7rem;
+                    padding: 0.2rem 0;
+                    display: flex;
+                    flex-direction: column;
+                    height: auto;
+                    align-items: center;
+                    justify-content: center;
+                }
+            }
+            
+            .mdc-list-item.mdc-list-item--with-one-line {
+                height: min-content;
+            }            
 
-    .mdc-list-item:focus::before,
-    .mdc-list-item:active::before {
-        background-color: transparent !important;
-    }
-}
+            .mdc-list-item:focus::before,
+            .mdc-list-item:active::before {
+                background-color: transparent !important;
+            }
+        }
 
-.mat-toolbar {
-  z-index: 2;
-}
-
-.content {
-    padding: 16px;
-}
-
-.nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 16px 0;
-    transition: transform 0.3s ease;
-
-    .nav-icon, .logout-icon {
-        width: 24px;
-        height: 24px;
-        transition: transform 0.3s ease, filter 0.3s ease;
+        .mat-mdc-nav-list .mat-mdc-list-item {
+            border-radius: 0;
+        }
     }
 
-    span {
-        font-size: 0.7rem;
-        padding: 0.2rem 0;
-        display: flex;
-        flex-direction: column;
-        height: auto;
-        align-items: center;
-        justify-content: center;
+    .mat-toolbar {
+        border-bottom: 2px solid #ccc;
     }
-}
-
-.nav-section {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-}
-
-.logout {
-    font-size: 0.7rem;
 }

@@ -1,1 +1,11 @@
-<p>user-header works!</p>
+<div *ngFor="let item of header; let i = index" class="header-item">
+    <div *ngIf="isRouteActive(item.route)" class="user-header">
+        <div class="left-section">
+            <img [src]="item.imgSrc" [alt]="item.title" class="icon" />
+            <span class="title">{{ item.title }}</span>
+        </div>
+        <div class="right-section">
+            <button mat-button color="accent">{{ item.buttonTitle }}</button>
+        </div>
+    </div>
+</div>
