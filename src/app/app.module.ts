@@ -43,9 +43,16 @@ import { UserPortalComponent } from './User Portal/user-portal/user-portal.compo
 import { SidePanelComponent } from './User Portal/side-panel/side-panel.component';
 import { UserHeaderComponent } from './User Portal/user-header/user-header.component';
 import { DashboardComponent } from './User Portal/Dashboard/dashboard/dashboard.component';
-import { ProfileComponent } from './User Portal/Dashboard/profile/profile.component';
-import { ScheduleComponent } from './User Portal/Dashboard/schedule/schedule.component';
+import { GeneralComponent } from './User Portal/Dashboard/Group/General/general/general.component';
+import { MemberComponent } from './User Portal/Dashboard/Group/Member/member/member.component';
+import { GroupComponent } from './User Portal/Dashboard/Group/group/group.component';
+import { ProfileComponent } from './User Portal/Profile/profile/profile.component';
+import { ScheduleComponent } from './User Portal/Schedule/schedule/schedule.component';
 import { environment } from '../environments/environment.development';
+import { GroupDialogComponent } from './User Portal/Dashboard/group-dialog/group-dialog.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { ProfileDialogComponent } from './User Portal/Profile/profile-dialog/profile-dialog.component';
+import { MatOptionModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -75,7 +82,12 @@ import { environment } from '../environments/environment.development';
     UserHeaderComponent,
     DashboardComponent,
     ProfileComponent,
-    ScheduleComponent
+    ScheduleComponent,
+    GeneralComponent,
+    MemberComponent,
+    GroupComponent,
+    GroupDialogComponent,
+    ProfileDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -93,6 +105,8 @@ import { environment } from '../environments/environment.development';
     MatButtonModule,
     MatSidenavModule,
     MatListModule,
+    MatTabsModule,
+    MatOptionModule
   ],
   providers: [
     provideAnimationsAsync(),

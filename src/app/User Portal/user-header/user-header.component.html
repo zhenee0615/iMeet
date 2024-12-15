@@ -5,7 +5,7 @@
             <span class="title">{{ item.title }}</span>
         </div>
         <div class="right-section">
-            <button mat-button color="accent">{{ item.buttonTitle }}</button>
+            <button mat-button color="accent" (click)="item.onclick()">{{ item.buttonTitle }}</button>
         </div>
     </div>
 </div>

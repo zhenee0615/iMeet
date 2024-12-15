@@ -1,0 +1,22 @@
+<div class="profile-container" *ngIf="user">
+  <h2 class="profile-header">My Profile</h2>
+  <div class="profile-details">
+    <div class="profile-row">
+      <label>Name:</label>
+      <span class="detail">{{ user.fullName || 'N/A' }}</span>
+    </div>
+    <div class="profile-row">
+      <label>Email:</label>
+      <span class="detail">{{ user.email || 'N/A' }}</span>
+    </div>
+    <div class="profile-row">
+      <label>Gender:</label>
+      <span class="detail">{{ user.gender || 'N/A' }}</span>
+    </div>
+    <div class="profile-row">
+      <label>Contact Number:</label>
+      <span class="detail">{{ user.phoneNumber || 'N/A' }}</span>
+    </div>
+  </div>
+</div>
+<div *ngIf="!user" class="loading-message">Loading user data...</div>

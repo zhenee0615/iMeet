@@ -1,0 +1,29 @@
+.mat-form-field {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.mat-dialog-actions {
+  margin-top: 16px;
+}
+
+.gender-selection {
+  margin: 0 0 1rem 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.gender-label {
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.gender-group {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.gender-radio {
+  margin-right: 0.5rem;
+}

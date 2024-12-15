@@ -1,11 +1,9 @@
 import { Component, inject } from '@angular/core';
 import { UserService } from '../../Services/user.service';
 import { Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from '../../Services/auth.service';
 import { User } from '../../Models/user.interface';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { firstValueFrom } from 'rxjs';
 import { NotificationService } from '../../Services/notification.service';
 
@@ -37,8 +35,6 @@ export class LoginComponent {
 
   constructor(
     private router: Router, 
-    private dialog: MatDialog,
-    private snackBar: MatSnackBar
   ) {
     this.loginForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email]),

@@ -1,0 +1,31 @@
+<h2 mat-dialog-title class="text-center">Edit Profile</h2>
+<mat-dialog-content>
+  <form [formGroup]="profileForm">
+    <mat-form-field class="w-100">
+      <mat-label>Full Name</mat-label>
+      <input matInput formControlName="fullName" placeholder="Full Name" />
+    </mat-form-field>
+
+    <mat-form-field class="w-100">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" placeholder="Email Address" />
+    </mat-form-field>
+
+    <div class="gender-selection">
+      <label class="gender-label">Gender:</label>
+      <mat-radio-group formControlName="gender" class="gender-group">
+        <mat-radio-button class="gender-radio" value="Male">Male</mat-radio-button>
+        <mat-radio-button class="gender-radio" value="Female">Female</mat-radio-button>
+      </mat-radio-group>
+    </div>
+
+    <mat-form-field class="w-100">
+      <mat-label>Contact Number</mat-label>
+      <input matInput formControlName="phoneNumber" placeholder="Contact Number" />
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-raised-button color="primary" (click)="onSave()">Save</button>
+</mat-dialog-actions>

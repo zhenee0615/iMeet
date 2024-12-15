@@ -1,0 +1,57 @@
+.profile-container {
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: #f9f9f9;
+  padding: 1.75rem 1.25rem 1.25rem 1.25rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  .profile-header {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .profile-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    .profile-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0 1rem 0;
+
+      &:not(:last-child) {
+        border-bottom: 1px solid #ccc;
+      }
+
+      label {
+        font-weight: bold;
+        color: #555;
+        flex: 1;
+      }
+
+      .detail {
+        flex: 2;
+        text-align: right;
+        color: #333;
+      }
+    }
+
+    button {
+      margin-top: 20px;
+      align-self: flex-end;
+    }
+  }
+
+  .loading-message {
+    text-align: center;
+    color: #999;
+    font-size: 16px;
+    margin-top: 20px;
+  }
+}

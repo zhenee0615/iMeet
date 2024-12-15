@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
-import { Firestore, addDoc, collection, collectionData, doc, updateDoc } from '@angular/fire/firestore';
-import { BehaviorSubject, map, Observable } from 'rxjs';
+import { Firestore, addDoc, collection, collectionData, getDocs, query, updateDoc, where } from '@angular/fire/firestore';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { User } from '../Models/user.interface';
 
 @Injectable({
@@ -30,9 +30,23 @@ export class UserService {
   //   return docData(userDoc, { idField: id})
   // }
 
-  async updateUser(id: string, data: any): Promise<void> {
-    const userDoc = doc(this.firestore, this.collectionName);
-    await updateDoc(userDoc, data);
+  // async updateUser(id: string, data: any): Promise<void> {
+  //   const userDoc = doc(this.firestore, this.collectionName);
+  //   await updateDoc(userDoc, data);
+  // }
+  async updateUser(user: User): Promise<void> {
+    const userCollectionRef = collection(this.firestore, 'user');
+    const userQuery = query(userCollectionRef, where('uid', '==', user.uid));
+
+    const querySnapshot = await getDocs(userQuery);
+
+    if (querySnapshot.empty) {
+      throw new Error(`No user found with UID: ${user.uid}`);
+    }
+
+    const userDocRef = querySnapshot.docs[0].ref; 
+    await updateDoc(userDocRef, { ...user });
+    this.setUser(user);
   }
 
   getUserSignal(): Observable<User | null> {

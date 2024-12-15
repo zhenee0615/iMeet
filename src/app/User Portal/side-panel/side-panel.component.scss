@@ -9,7 +9,7 @@
     }
 
     .sidenav {
-        width: fit-content;
+        width: 65px;
         background-color: rgb(223, 223, 223);
 
         mat-nav-list {
@@ -63,5 +63,9 @@
 
     .mat-toolbar {
         border-bottom: 2px solid #ccc;
+    }
+
+    .content {
+        margin-left: 64 !important;
     }
 }
