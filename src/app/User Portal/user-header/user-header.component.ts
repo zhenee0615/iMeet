@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService } from '../../Services/user.service';
-import { User } from '../../Models/user.interface';
+import { User } from '../../Models/user';
 import { Subscription } from 'rxjs';
 import { GroupDialogComponent } from '../Dashboard/group-dialog/group-dialog.component';
 import { MatDialog } from '@angular/material/dialog';

@@ -31,7 +31,7 @@ import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getDatabase, provideDatabase } from '@angular/fire/database';
 import { getAuth, provideAuth } from '@angular/fire/auth';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatInputModule } from '@angular/material/input';
@@ -53,6 +53,9 @@ import { GroupDialogComponent } from './User Portal/Dashboard/group-dialog/group
 import { MatTabsModule } from '@angular/material/tabs';
 import { ProfileDialogComponent } from './User Portal/Profile/profile-dialog/profile-dialog.component';
 import { MatOptionModule } from '@angular/material/core';
+import { AddPostDialogComponent } from './User Portal/Dashboard/Group/add-post-dialog/add-post-dialog.component';
+import { AngularFireStorageModule } from '@angular/fire/compat/storage';
+import { getStorage, provideStorage } from '@angular/fire/storage';
 
 @NgModule({
   declarations: [
@@ -87,7 +90,8 @@ import { MatOptionModule } from '@angular/material/core';
     MemberComponent,
     GroupComponent,
     GroupDialogComponent,
-    ProfileDialogComponent
+    ProfileDialogComponent,
+    AddPostDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -106,14 +110,22 @@ import { MatOptionModule } from '@angular/material/core';
     MatSidenavModule,
     MatListModule,
     MatTabsModule,
-    MatOptionModule
+    MatOptionModule,
+    AngularFireStorageModule
   ],
   providers: [
     provideAnimationsAsync(),
     provideFirebaseApp(() => initializeApp(environment)),
     provideFirestore(() => getFirestore()),
     provideDatabase(() => getDatabase()),
-    provideAuth(() => getAuth())
+    provideAuth(() => getAuth()),
+    provideStorage(() => getStorage()),
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: {
+        subscriptSizing: 'dynamic'
+      }
+    }
   ],
   bootstrap: [AppComponent]
 })

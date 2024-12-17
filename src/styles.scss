@@ -24,3 +24,39 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   display: flex;
   justify-content: center;
 }
+
+.mat-mdc-tab-label-container {
+  border: none !important;
+}
+
+.comments-section {
+  .mdc-button.mat-mdc-button.mat-unthemed.mat-mdc-button-base:hover {
+    background-color: transparent !important;
+  }
+
+  .mat-mdc-button:hover .mat-mdc-button-persistent-ripple::before, .mat-mdc-button:focus, .mat-mdc-button:active{
+    opacity: 1 !important;
+    background-color: transparent !important;
+  }
+}
+
+.reply-section {
+  .mat-mdc-text-field-wrapper.mdc-text-field.mdc-text-field--outlined, .mat-mdc-form-field-infix, .mat-mdc-form-field-flex {
+    height: 40px !important;
+  }  
+
+  .mat-mdc-form-field-infix {
+    min-height: 40px;
+    height: 40px !important;
+    display: flex;
+    align-items: center;
+  }
+
+  .mdc-notched-outline {
+    display: none; /* Hides the border outline */
+  }
+
+  .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-text-field__input {
+    color: white;
+  }
+}

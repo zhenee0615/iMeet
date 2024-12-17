@@ -1,7 +1,8 @@
 import { inject, Injectable } from '@angular/core';
-import { Firestore, addDoc, collection, collectionData, getDocs, query, updateDoc, where } from '@angular/fire/firestore';
+import { Firestore, addDoc, collection, collectionData, doc, docData, getDoc, getDocs, query, updateDoc, where } from '@angular/fire/firestore';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { User } from '../Models/user.interface';
+import { User } from '../Models/user';
+import { NotificationService } from './notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,7 @@ export class UserService {
   private collectionName = 'user';
   private userSignal: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
   firestore: Firestore = inject(Firestore);
+  notificationService = inject(NotificationService);
   
   constructor() { }
 
@@ -25,10 +27,27 @@ export class UserService {
     await addDoc(userCollection, userWithoutPassword);
   }
 
-  // async getUserById(id: string): Promise<Observable<any>> {
-  //   const userDoc = doc(this.firestore, `${this.collectionName}/${id}`);
-  //   return docData(userDoc, { idField: id})
-  // }
+  async getUserById(userId: string): Promise<any> {
+    try {
+      // Reference to the 'users' collection
+      const userCollectionRef = collection(this.firestore, this.collectionName);
+      
+      // Query to find the document where uid matches
+      const q = query(userCollectionRef, where('uid', '==', userId));
+
+      // Execute the query
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        // Assuming uid is unique, take the first result
+        const userDoc = querySnapshot.docs[0];
+        const userData = { ...userDoc.data() } as User;
+        return userData;
+      }
+    } catch (error) {
+      this.notificationService.showNotification("Unable to retrieve user data. Please try logging in again.", 'error-snackbar');
+    }
+  }
 
   // async updateUser(id: string, data: any): Promise<void> {
   //   const userDoc = doc(this.firestore, this.collectionName);

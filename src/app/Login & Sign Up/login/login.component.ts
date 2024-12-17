@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { UserService } from '../../Services/user.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../../Services/auth.service';
-import { User } from '../../Models/user.interface';
+import { User } from '../../Models/user';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 import { NotificationService } from '../../Services/notification.service';
@@ -124,7 +124,6 @@ export class LoginComponent {
           this.toggleMode();
         }, 
         error: (error) => {
-          console.log(error)
           if (error.code === 'auth/email-already-in-use') {
             this.notificationService.showNotification("This email have been used. Please try another.", 'error-snackbar');
           } else {

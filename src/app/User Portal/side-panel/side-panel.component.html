@@ -9,7 +9,7 @@
                 <mat-list-item
                     *ngFor="let item of items"
                     [routerLink]="item.route"
-                    routerLinkActive="active"
+                    [class.active]="isRouteActive(item.route)"
                     class="nav-item"
                 >
                     <img
@@ -39,6 +39,12 @@
         </button>
       }
       <app-user-header></app-user-header>
+      <ng-container *ngIf="isGroupRoute()">
+        <mat-tab-group (selectedTabChange)="onTabChange($event)">
+          <mat-tab label="General"></mat-tab>
+          <mat-tab label="Members"></mat-tab>
+        </mat-tab-group>
+      </ng-container>
     </mat-toolbar>
     <router-outlet></router-outlet>
   </mat-sidenav-content>

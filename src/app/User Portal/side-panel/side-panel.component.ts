@@ -1,10 +1,10 @@
 import { Component, inject } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
-import { User } from '../../Models/user.interface';
+import { User } from '../../Models/user';
 import { AuthService } from '../../Services/auth.service';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { UserService } from '../../Services/user.service';
 
 interface MenuItem {
@@ -23,9 +23,13 @@ interface MenuItem {
 
 export class SidePanelComponent {
   isHandset$: Observable<boolean>;
+  showUserHeader: boolean = false;
   userData: User | null = null;
+  activeTab$: BehaviorSubject<string> = new BehaviorSubject('General');
   authService = inject(AuthService);
   items: MenuItem[] = [];
+  private userDataSubject = new BehaviorSubject<User | null>(null);
+  userData$ = this.userDataSubject.asObservable();
 
   constructor(private breakpointObserver: BreakpointObserver, private router: Router, private userService: UserService) {
     this.isHandset$ = this.breakpointObserver.observe(Breakpoints.Handset)
@@ -64,11 +68,23 @@ export class SidePanelComponent {
   }
 
   isRouteActive(route: string): boolean {
-    return this.router.url === route;
+    return this.router.url.includes(route);
+  }
+
+  onTabChange(event: any): void {
+    const tabLabel = event.tab.textLabel;
+    this.activeTab$.next(tabLabel);
   }
 
   logout(): void {
     localStorage.removeItem('hasLoggedIn');
     this.authService.logout();
+  }
+
+  isGroupRoute(): boolean {
+    const url = this.router.url;
+    const groupRouteRegex = /^\/user\/[a-zA-Z0-9]+\/group\/[a-zA-Z0-9]+$/;
+    return groupRouteRegex.test(url); 
+    // return this.router.url.includes("general");
   }
 }

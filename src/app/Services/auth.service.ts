@@ -1,7 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from '@angular/fire/auth';
 import { from, Observable } from 'rxjs';
-import { User } from '../Models/user.interface';
+import { User } from '../Models/user';
 import { sendPasswordResetEmail } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { UserService } from './user.service';

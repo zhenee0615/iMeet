@@ -13,21 +13,21 @@
           {{ isSignUpMode ? "Sign Up" : "Login" }}
         </h1>
         <form [formGroup]="isSignUpMode ? signUpForm : loginForm" (ngSubmit)="onSubmit()">
-          <div *ngIf="isSignUpMode" class="form-group mb-0">
+          <div *ngIf="isSignUpMode" class="form-group">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>Full Name</mat-label>
               <input matInput type="text" formControlName="fullName" placeholder="Full Name" [(ngModel)]="fullName" name="fullName" required />
             </mat-form-field>
           </div>
 
-          <div class="form-group mb-0">
+          <div class="form-group">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>Email</mat-label>
               <input matInput type="email" formControlName="email" placeholder="Email" [(ngModel)]="email" name="email" required />
             </mat-form-field>
           </div>
 
-		  <div class="form-group mb-0">
+		  <div class="form-group">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>Password</mat-label>
               <input
@@ -41,36 +41,37 @@
             </mat-form-field>
           </div>
 
-		  <div *ngIf="isSignUpMode" class="form-group mb-0">
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-label>Confirm Password</mat-label>
-              <input
-                matInput
-                [type]="hideConfirmPassword ? 'password' : 'text'"
-                formControlName="confirmPassword" [(ngModel)]="confirmPassword" name="confirmPassword"
-                required
-              />
-                <mat-icon matSuffix class="visibility-icon" (click)="toggleConfirmPasswordVisibility()">{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}
-				</mat-icon>
-            </mat-form-field>
-          </div>
+		  <div *ngIf="isSignUpMode" class="form-group">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Confirm Password</mat-label>
+          <input
+            matInput
+            [type]="hideConfirmPassword ? 'password' : 'text'"
+            formControlName="confirmPassword" [(ngModel)]="confirmPassword" name="confirmPassword"
+            required
+          />
+            <mat-icon matSuffix class="visibility-icon" (click)="toggleConfirmPasswordVisibility()">
+              {{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}
+          </mat-icon>
+        </mat-form-field>
+      </div>
 
-          <div *ngIf="isSignUpMode" class="form-group mb-0">
-            <label class="font pb-1">Gender</label>
-            <div class="pb-2">
-              <mat-radio-group formControlName="gender" name="gender" [(ngModel)]="gender" class="d-flex">
-                <mat-radio-button value="Male" class="me-4">Male</mat-radio-button>
-                <mat-radio-button value="Female">Female</mat-radio-button>
-              </mat-radio-group>
-            </div>
-          </div>
+      <div *ngIf="isSignUpMode" class="form-group">
+        <label class="font pb-1">Gender</label>
+        <div class="pb-2">
+          <mat-radio-group formControlName="gender" name="gender" [(ngModel)]="gender" class="d-flex">
+            <mat-radio-button value="Male" class="me-4">Male</mat-radio-button>
+            <mat-radio-button value="Female">Female</mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
 
-          <div *ngIf="isSignUpMode" class="form-group mb-2">
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-label>Contact Number</mat-label>
-              <input matInput type="text" formControlName="contactNumber" placeholder="Contact Number" [(ngModel)]="contactNumber" name="contactNumber" required />
-            </mat-form-field>
-          </div>
+      <div *ngIf="isSignUpMode" class="form-group mb-2">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Contact Number</mat-label>
+          <input matInput type="text" formControlName="contactNumber" placeholder="Contact Number" [(ngModel)]="contactNumber" name="contactNumber" required />
+        </mat-form-field>
+      </div>
 
 		  <div class="d-flex flex-row justify-content-end">
 			<a (click)="resetPassword()" *ngIf="!isSignUpMode" class="pb-3">Forgot Password?</a>

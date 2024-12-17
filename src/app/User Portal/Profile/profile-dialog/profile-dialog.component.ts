@@ -1,7 +1,7 @@
 import { Component, inject, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { User } from '../../../Models/user.interface';
+import { User } from '../../../Models/user';
 import { UserService } from '../../../Services/user.service';
 import { NotificationService } from '../../../Services/notification.service';
 
@@ -34,21 +34,6 @@ export class ProfileDialogComponent {
     });
   }
 
-  // async onSave(): Promise<void> {
-  //   console.log("1")
-  //   if (this.profileForm.valid) {
-  //     console.log("2")
-  //     const updatedUser: User = { ...this.profileForm.value };
-  //     console.log("3")
-  //     await this.userService.updateUser(updatedUser);
-  //     console.log("4")
-  //     this.dialogRef.close(updatedUser);
-  //     console.log("5")
-  //     this.notificationService.showNotification("Successfully updated your profile details.", "success-snackbar");
-  //     return
-  //   }
-  //   this.notificationService.showNotification("Invalid input", "error-snackbar");
-  // }
   async onSave(): Promise<void> {
     if (this.validateForm()) {
       const updatedUser: User = { uid: this.userData.uid, ...this.profileForm.value };
@@ -66,7 +51,7 @@ export class ProfileDialogComponent {
           "error-snackbar"
         );
       }
-    } 
+    }
   }
 
   validateForm(): boolean {

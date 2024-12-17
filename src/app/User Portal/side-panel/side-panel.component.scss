@@ -10,7 +10,7 @@
 
     .sidenav {
         width: 65px;
-        background-color: rgb(223, 223, 223);
+        background-color: rgb(255, 255, 255);
 
         mat-nav-list {
             padding: 0;
@@ -62,10 +62,15 @@
     }
 
     .mat-toolbar {
-        border-bottom: 2px solid #ccc;
+        border-bottom: 1px solid #ccc;
+        background-color: #c2bfbf;
+        position: sticky;
+        top: 0;
+        z-index: 10000;
     }
 
     .content {
         margin-left: 64 !important;
+        background-color: #2d2a2a;
     }
 }

@@ -21,25 +21,17 @@ const routes: Routes = [
     component: UserPortalComponent,
     children: [
       { path: '', redirectTo: 'group', pathMatch: 'full' },
-      {
-        path: 'group',
-        component: DashboardComponent,
-        children: [
-          {
-            path: 'group/:groupId',
-            component: GroupComponent
-          }
-        ]
-      },
+      { path: 'group', component: DashboardComponent },
+      { path: 'group/:groupId', component: GroupComponent },
       { path: 'profile', component: ProfileComponent },
       { path: 'schedule', component: ScheduleComponent },
     ],
   },
-  { path: 'dashboard', component: DashboardComponent },
   { path: '', component: MainpageComponent },
   { path: '', redirectTo: '/mainpage', pathMatch: 'full' },
-  { path: '**', redirectTo: '/mainpage' }
+  { path: '**', redirectTo: '/mainpage' },
 ];
+
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
