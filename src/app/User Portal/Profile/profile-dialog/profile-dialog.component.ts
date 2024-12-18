@@ -12,6 +12,7 @@ import { NotificationService } from '../../../Services/notification.service';
   styleUrls: ['./profile-dialog.component.scss']
 })
 export class ProfileDialogComponent {
+  profilePicUrl: string = "";
   profileForm: FormGroup;
   userService = inject(UserService);
   notificationService = inject(NotificationService);
@@ -20,6 +21,7 @@ export class ProfileDialogComponent {
     @Inject(MAT_DIALOG_DATA) public userData: User,
     private dialogRef: MatDialogRef<ProfileDialogComponent>
   ) {
+    this.profilePicUrl = this.userData.profilePicUrl;
     this.profileForm = new FormGroup({
       fullName: new FormControl(userData.fullName || '', Validators.required),
       email: new FormControl(userData.email || '', [
@@ -27,16 +29,30 @@ export class ProfileDialogComponent {
         Validators.email
       ]),
       gender: new FormControl(userData.gender || '', Validators.required),
-      phoneNumber: new FormControl(userData.phoneNumber || '', [
+      contactNumber: new FormControl(userData.contactNumber || '', [
         Validators.required,
         Validators.pattern(/^\d+$/)
       ])
     });
   }
 
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        this.profilePicUrl = reader.result as string; // Update the displayed image
+      };
+
+      reader.readAsDataURL(file);
+    }
+  }
+
   async onSave(): Promise<void> {
     if (this.validateForm()) {
-      const updatedUser: User = { uid: this.userData.uid, ...this.profileForm.value };
+      const updatedUser: User = { uid: this.userData.uid, profilePicUrl: this.profilePicUrl ,...this.profileForm.value };
 
       try {
         await this.userService.updateUser(updatedUser);
@@ -55,9 +71,9 @@ export class ProfileDialogComponent {
   }
 
   validateForm(): boolean {
-    const { fullName, email, gender, phoneNumber } = this.profileForm.value;
+    const { fullName, email, gender, contactNumber } = this.profileForm.value;
 
-    if (!fullName || !email || !gender || !phoneNumber) {
+    if (!fullName || !email || !gender || !contactNumber) {
       this.notificationService.showNotification(
         "All fields are required. Please fill in all fields.",
         "error-snackbar"
@@ -73,7 +89,7 @@ export class ProfileDialogComponent {
       return false;
     }
 
-    if (!this.validateContactNumber(phoneNumber)) {
+    if (!this.validateContactNumber(contactNumber)) {
       this.notificationService.showNotification(
         "Contact number must contain only digits.",
         "error-snackbar"

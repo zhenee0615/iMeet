@@ -11,10 +11,6 @@ import { User } from '../../../Models/user';
 })
 export class ProfileComponent {
   user: User | null = null;
-  fullName: string = '';
-  email: string = '';
-  gender: string = '';
-  contactNumber: string = '';
 
   constructor(private userService: UserService) {}
 

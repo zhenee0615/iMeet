@@ -1,17 +1,43 @@
 <h2 mat-dialog-title class="text-center">Edit Profile</h2>
 <mat-dialog-content>
   <form [formGroup]="profileForm">
-    <mat-form-field class="w-100">
+    <div class="profile-upload-container pb-4">
+      <div class="profile-image-wrapper">
+        <img
+          [src]="profilePicUrl"
+          alt="Profile Picture"
+          class="profile-image"
+        />
+        <ng-template #placeholder>
+          <div class="profile-placeholder"></div>
+        </ng-template>
+
+        <label class="upload-icon">
+          <mat-icon>add</mat-icon>
+          <input
+            type="file"
+            accept="image/*"
+            (change)="onFileSelected($event)"
+            hidden
+          />
+        </label>
+      </div>
+    </div>
+
+    <!-- Full Name -->
+    <mat-form-field class="w-100 pb-4">
       <mat-label>Full Name</mat-label>
       <input matInput formControlName="fullName" placeholder="Full Name" />
     </mat-form-field>
 
-    <mat-form-field class="w-100">
+    <!-- Email -->
+    <mat-form-field class="w-100 pb-4">
       <mat-label>Email</mat-label>
       <input matInput formControlName="email" placeholder="Email Address" />
     </mat-form-field>
 
-    <div class="gender-selection">
+    <!-- Gender -->
+    <div class="gender-selection pb-2">
       <label class="gender-label">Gender:</label>
       <mat-radio-group formControlName="gender" class="gender-group">
         <mat-radio-button class="gender-radio" value="Male">Male</mat-radio-button>
@@ -19,12 +45,15 @@
       </mat-radio-group>
     </div>
 
-    <mat-form-field class="w-100">
+    <!-- Contact Number -->
+    <mat-form-field class="w-100 pb-2">
       <mat-label>Contact Number</mat-label>
-      <input matInput formControlName="phoneNumber" placeholder="Contact Number" />
+      <input matInput formControlName="contactNumber" placeholder="Contact Number" />
     </mat-form-field>
   </form>
 </mat-dialog-content>
+
+<!-- Actions -->
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Cancel</button>
   <button mat-raised-button color="primary" (click)="onSave()">Save</button>

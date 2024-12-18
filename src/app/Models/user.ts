@@ -2,6 +2,7 @@ export interface User {
     fullName: string;
     email: string;
     gender: string;
-    phoneNumber: string;
+    contactNumber: string;
     uid: string;
+    profilePicUrl: string;
 }

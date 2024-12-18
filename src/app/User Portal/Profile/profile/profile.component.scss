@@ -2,22 +2,25 @@
   max-width: 600px;
   margin: 0 auto;
   background-color: #f9f9f9;
-  padding: 1.75rem 1.25rem 1.25rem 1.25rem;
+  padding: 6rem 1.25rem 1.25rem 1.25rem;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-
-  .profile-header {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
-  }
+  margin-top: 9rem;
 
   .profile-details {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    justify-content: center;
+
+    .profile-picture {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      transform: translateY(-100%);
+      object-fit: cover;
+      object-position: center;
+    }
 
     .profile-row {
       display: flex;

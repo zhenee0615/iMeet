@@ -45,7 +45,8 @@
               "src/styles.scss"
             ],
             "scripts": [
-              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
+              "https://cdn.jsdelivr.net/npm/face-api.js/dist/face-api.min.js"
             ]
           },
           "configurations": {

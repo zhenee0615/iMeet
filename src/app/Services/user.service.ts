@@ -1,15 +1,16 @@
 import { inject, Injectable } from '@angular/core';
-import { Firestore, addDoc, collection, collectionData, doc, docData, getDoc, getDocs, query, updateDoc, where } from '@angular/fire/firestore';
+import { Firestore, addDoc, collection, collectionData, getDocs, query, updateDoc, where } from '@angular/fire/firestore';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { User } from '../Models/user';
 import { NotificationService } from './notification.service';
+import { getDownloadURL, getStorage, ref, uploadString } from 'firebase/storage';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class UserService {
-  private collectionName = 'user';
+  private collectionName = 'users';
   private userSignal: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
   firestore: Firestore = inject(Firestore);
   notificationService = inject(NotificationService);
@@ -27,19 +28,22 @@ export class UserService {
     await addDoc(userCollection, userWithoutPassword);
   }
 
+  async uploadProfileImageToStorage(imgUrl: string): Promise<string> {
+    const storage = getStorage();
+    const fileName = `profile_pics/${Date.now()}_${Math.random().toString(36).substring(2)}`;
+    const storageRef = ref(storage, fileName);
+
+    const uploadResult = await uploadString(storageRef, imgUrl, 'data_url');
+    return await getDownloadURL(uploadResult.ref);
+  }
+
   async getUserById(userId: string): Promise<any> {
     try {
-      // Reference to the 'users' collection
       const userCollectionRef = collection(this.firestore, this.collectionName);
-      
-      // Query to find the document where uid matches
       const q = query(userCollectionRef, where('uid', '==', userId));
-
-      // Execute the query
       const querySnapshot = await getDocs(q);
 
       if (!querySnapshot.empty) {
-        // Assuming uid is unique, take the first result
         const userDoc = querySnapshot.docs[0];
         const userData = { ...userDoc.data() } as User;
         return userData;
@@ -49,16 +53,10 @@ export class UserService {
     }
   }
 
-  // async updateUser(id: string, data: any): Promise<void> {
-  //   const userDoc = doc(this.firestore, this.collectionName);
-  //   await updateDoc(userDoc, data);
-  // }
   async updateUser(user: User): Promise<void> {
-    const userCollectionRef = collection(this.firestore, 'user');
+    const userCollectionRef = collection(this.firestore, this.collectionName);
     const userQuery = query(userCollectionRef, where('uid', '==', user.uid));
-
     const querySnapshot = await getDocs(userQuery);
-
     if (querySnapshot.empty) {
       throw new Error(`No user found with UID: ${user.uid}`);
     }
@@ -83,8 +81,4 @@ export class UserService {
   clearUser(): void {
     this.userSignal.next(null);
   }
-
-  // private async deleteItem(id: string): Promise<void> {
-
-  // }
 }

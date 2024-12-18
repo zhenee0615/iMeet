@@ -6,6 +6,7 @@ import { User } from '../../Models/user';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 import { NotificationService } from '../../Services/notification.service';
+import { FaceDetectionService } from '../../Services/face-detection.service';
 
 @Component({
   selector: 'app-login',
@@ -23,6 +24,7 @@ export class LoginComponent {
   gender: string = '';
   contactNumber: string = '';
   errorMessage: string = '';
+  profilePicUrl: string = "profile_signup_icon.png";
   isSignUpMode: boolean = false; 
   hidePassword: boolean = true;
   hideConfirmPassword: boolean = true;
@@ -31,6 +33,7 @@ export class LoginComponent {
   user: User | null = null;
   private userService = inject(UserService);
   private authService = inject(AuthService);
+  private faceDetectionService = inject(FaceDetectionService);
   private notificationService = inject(NotificationService);
 
   constructor(
@@ -65,6 +68,12 @@ export class LoginComponent {
     this.userService.getUsers().subscribe((data: any[]) => {
       this.userList = data;
     });
+    
+    this.faceDetectionService.loadFaceApiScript();
+  }
+
+  async onFileSelected(event: Event): Promise<void> {
+    this.profilePicUrl = await this.faceDetectionService.onFileSelected(event);
   }
 
   onSubmit() {
@@ -112,25 +121,36 @@ export class LoginComponent {
     }
   }
 
-  onSignUp() {
+  async onSignUp() {
     if (this.validateForm()) {
       const { fullName, email, password } = this.signUpForm.value;
-      this.authService.register(email, fullName, password).subscribe({
-        next: (uid) => {
-          const userData = { ...this.signUpForm.value, uid };
-          this.userService.createUser(userData);
-          this.notificationService.showNotification("You have successfully sign up an account.", 'success-snackbar');
-          this.userService.clearUser();
-          this.toggleMode();
-        }, 
-        error: (error) => {
-          if (error.code === 'auth/email-already-in-use') {
-            this.notificationService.showNotification("This email have been used. Please try another.", 'error-snackbar');
-          } else {
-            this.notificationService.showNotification("An error occurred during sign-up. Please try again.", 'error-snackbar');
-          }
-        }
-      });
+      
+      try {
+        this.authService.register(email, fullName, password).subscribe({
+          next: async (uid) => {
+            const profileUrl = await this.userService.uploadProfileImageToStorage(this.profilePicUrl); 
+            const userData = {
+              ...this.signUpForm.value,
+              uid,
+              profilePicUrl: profileUrl, // Include the image URL here
+            };
+
+            await this.userService.createUser(userData);
+            this.notificationService.showNotification("You have successfully signed up.", 'success-snackbar');
+            this.userService.clearUser();
+            this.toggleMode();
+          },
+          error: (error) => {
+            if (error.code === 'auth/email-already-in-use') {
+              this.notificationService.showNotification("This email is already in use.", 'error-snackbar');
+            } else {
+              this.notificationService.showNotification("An error occurred during sign-up.", 'error-snackbar');
+            }
+          },
+        });
+      } catch (error) {
+        this.notificationService.showNotification("Failed to upload profile image.", 'error-snackbar');
+      }
     }
   }
 
@@ -141,7 +161,8 @@ export class LoginComponent {
 
   validateForm(): boolean {
     if (this.isSignUpMode) {
-      const { fullName, email, password, confirmPassword, gender, contactNumber } = this.signUpForm.value
+      const { fullName, email, password, confirmPassword, gender, contactNumber } = this.signUpForm.value;
+
       if (!fullName || !email || !password || !confirmPassword || !gender || !contactNumber) {
         this.notificationService.showNotification("All fields are required. Please fill in all fields.", 'error-snackbar');
         return false;
@@ -164,6 +185,11 @@ export class LoginComponent {
 
       if (!this.validateContactNumber()) {
         this.notificationService.showNotification("Contact number must contain only digits.", 'error-snackbar');
+        return false;
+      }
+
+      if (this.profilePicUrl === 'profile_signup_icon.png') {
+        this.notificationService.showNotification("Please upload a profile picture.", 'error-snackbar');
         return false;
       }
     }
