@@ -64,12 +64,14 @@ export class GroupComponent implements OnInit {
       for (const post of posts) {
         const user = await this.userService.getUserById(post.userId);
         post.fullName = user?.fullName;
+        post.profilePicUrl = user?.profilePicUrl || 'profile_signup_icon.png';
 
         const comments = await this.postService.getCommentsByPostId(post.postId);
         comments.sort((a, b) => new Date(a.dateCreated).getTime() - new Date(b.dateCreated).getTime());
 
         for (const comment of comments) {
           const commentUser = await this.userService.getUserById(comment.userId);
+          comment.profilePicUrl = commentUser?.profilePicUrl || 'profile_signup_icon.png';
           comment.fullName = commentUser?.fullName;
         }
         post.comments = comments;

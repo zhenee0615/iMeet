@@ -5,9 +5,9 @@
         <div *ngFor="let post of postList" class="post-card">
             <div class="post-header-section">
                 <div class="post-header">
-                <!-- <div class="post-avatar">
-                <img src="assets/avatar-placeholder.png" alt="Avatar" />
-                </div> -->
+                    <div class="post-avatar">
+                        <img [src]="post.profilePicUrl" alt="Avatar" />
+                    </div>
                     <div class="post-info">
                         <strong>{{ post.fullName }}</strong>
                         <small>{{ post.dateCreated | date: 'dd-MM-yyyy hh:mm a' }}</small>
@@ -30,9 +30,9 @@
                 *ngFor="let comment of post.comments.slice(0, showAllComments[post.postId] ? post.comments.length : 3)"
                 class="comment"
                 >
-                <!-- <div class="comment-avatar">
-                    <img src="assets/avatar-placeholder.png" alt="Avatar" />
-                </div> -->
+                <div class="comment-avatar">
+                    <img [src]="comment.profilePicUrl" alt="Avatar" />
+                </div>
                 <div class="comment-content">
                     <strong>{{ comment.fullName }}</strong>
                     <small>{{ comment.dateCreated | date: 'dd-MM-yyyy hh:mm a' }}</small>

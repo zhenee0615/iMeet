@@ -8,14 +8,16 @@ export interface Post {
     dateCreated: string;
     comments: Comment[];
     fullName?: string;
+    profilePicUrl?: string;
 }
 
 export interface Comment {
-    commentId?: string;
     userId: string;
     content: string;
     dateCreated: string;
+    commentId?: string;
     fullName?: string;
+    profilePicUrl?: string;
 }
 
 export interface Attachments {
