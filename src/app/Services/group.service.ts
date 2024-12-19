@@ -30,7 +30,7 @@ export class GroupService {
     const groupMember = {
       groupId: groupId,
       uid: adminId,
-      dateJoined: new Date().toLocaleDateString('en-GB').replace(/\//g, '-')
+      dateJoined: new Date().toLocaleDateString('en-CA').replace(/\//g, '-')
     }
     await addDoc(groupMemberCollection, groupMember)
   }
@@ -60,7 +60,7 @@ export class GroupService {
     const groupMember = {
       groupId: groupId,
       uid: userId,
-      dateJoined: new Date().toLocaleDateString('en-GB').replace(/\//g, '-')
+      dateJoined: new Date().toLocaleDateString('en-CA').replace(/\//g, '-')
     };
 
     await addDoc(groupMembersCollection, groupMember);
@@ -99,5 +99,18 @@ export class GroupService {
   getGroupById(groupId: string): Observable<Group> {
     const groupDocRef = doc(this.firestore, `groups/${groupId}`);
     return docData(groupDocRef, { idField: 'groupId' }) as Observable<Group>;
+  }
+
+  async getGroupMembers(groupId: string): Promise<any[]> {
+    const groupMembersCollection = collection(this.firestore, 'group_members');
+    const membersQuery = query(groupMembersCollection, where('groupId', '==', groupId));
+    const membersSnapshot = await getDocs(membersQuery);
+    return membersSnapshot.docs.map(doc => doc.data());
+  }
+
+  async getGroupDetails(groupId: string): Promise<any> {
+    const groupDoc = doc(this.firestore, `groups/${groupId}`);
+    const groupData = await getDoc(groupDoc);
+    return groupData.data();
   }
 }

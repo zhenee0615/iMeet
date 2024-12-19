@@ -132,7 +132,7 @@ export class LoginComponent {
             const userData = {
               ...this.signUpForm.value,
               uid,
-              profilePicUrl: profileUrl, // Include the image URL here
+              profilePicUrl: profileUrl,
             };
 
             await this.userService.createUser(userData);
@@ -189,7 +189,7 @@ export class LoginComponent {
       }
 
       if (this.profilePicUrl === 'profile_signup_icon.png') {
-        this.notificationService.showNotification("Please upload a profile picture.", 'error-snackbar');
+        this.notificationService.showNotification("Please upload your profile picture.", 'error-snackbar');
         return false;
       }
     }

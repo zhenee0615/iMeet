@@ -20,17 +20,20 @@ import { MatDialog } from '@angular/material/dialog';
 export class GroupComponent implements OnInit {
   groupId: string | null = null;
   group: Group | null = null;
+  adminMember: any | null = null;
   activeTab: string = 'General';
   uid: string | null = null;
   postList: Post[] = [];
+  membersList: any[] = [];
+  displayedColumns: string[] = ['name', 'dateJoined', 'role'];
   isLoading: boolean = true;
-  // showComments: { [key: string]: boolean } = {};
   postForm: FormGroup;
   showAllComments: { [postId: string]: boolean } = {};
   commentForms: { [key: string]: FormGroup } = {};
   showReplyInput: { [key: string]: boolean } = {};
   private postService = inject(PostService);
   private userService = inject(UserService);
+  private groupService = inject(GroupService);
 
   constructor(
     private route: ActivatedRoute,
@@ -54,8 +57,14 @@ export class GroupComponent implements OnInit {
 
     this.route.paramMap.subscribe((params) => {
       this.groupId = params.get('groupId');
-      this.subscribeToPosts();
     });
+    this.fetchGroupMembers();
+
+    if (this.activeTab == "General") {
+      this.subscribeToPosts();
+    } else if (this.activeTab == "Members") {
+      this.fetchGroupMembers();
+    }
   }
 
   subscribeToPosts() {
@@ -86,6 +95,36 @@ export class GroupComponent implements OnInit {
       this.isLoading = false;
     });
   }
+
+  async fetchGroupMembers() {
+    try {
+      const groupData = await this.groupService.getGroupDetails(this.groupId!);
+      const adminId = groupData?.admin;
+      const groupMembers = await this.groupService.getGroupMembers(this.groupId!);
+      const membersPromises = groupMembers.map(async member => {
+        const user = await this.userService.getUserById(member.uid);
+        return {
+          uid: member.uid,
+          fullName: user?.fullName || 'Unknown',
+          profilePicUrl: user?.profilePicUrl || 'assets/avatar-placeholder.png',
+          dateJoined: member.dateJoined,
+          isAdmin: member.uid === adminId,
+        };
+      });
+
+      const members = await Promise.all(membersPromises);
+      this.adminMember = members.find(member => member.isAdmin) || null;
+      this.membersList = members.filter(member => !member.isAdmin);
+      if (this.adminMember) {
+        this.membersList.unshift(this.adminMember);
+      }
+    } catch (error) {
+      console.error('Error fetching group members:', error);
+    } finally {
+      this.isLoading = false;
+    }
+  }
+  
 
   toggleReplyInput(postId: string): void {
     this.showReplyInput[postId] = true;

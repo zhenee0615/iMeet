@@ -39,6 +39,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
+import { MatTableModule } from '@angular/material/table';
 import { UserPortalComponent } from './User Portal/user-portal/user-portal.component';
 import { SidePanelComponent } from './User Portal/side-panel/side-panel.component';
 import { UserHeaderComponent } from './User Portal/user-header/user-header.component';
@@ -111,6 +112,7 @@ import { getStorage, provideStorage } from '@angular/fire/storage';
     MatListModule,
     MatTabsModule,
     MatOptionModule,
+    MatTableModule,
     AngularFireStorageModule
   ],
   providers: [
