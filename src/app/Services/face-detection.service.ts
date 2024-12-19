@@ -47,7 +47,7 @@ export class FaceDetectionService {
           Swal.fire({
             title: 'Verifying face...',
             text: 'Please wait while we process the image.',
-            didOpen: () => Swal.showLoading(),
+            didOpen: () => Swal.showLoading(null),
             allowOutsideClick: false,
           });
 

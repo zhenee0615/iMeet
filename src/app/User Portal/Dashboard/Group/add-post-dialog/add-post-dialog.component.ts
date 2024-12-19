@@ -37,7 +37,7 @@ export class AddPostDialogComponent {
           title: 'Uploading...',
           text: 'Please wait while the files are uploading.',
           allowOutsideClick: false,
-          didOpen: () => Swal.showLoading(),
+          didOpen: () => Swal.showLoading(null),
         });
 
         const newPost = {
