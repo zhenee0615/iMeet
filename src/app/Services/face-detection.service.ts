@@ -10,18 +10,6 @@ export class FaceDetectionService {
   profilePicUrl: string = "";
   constructor() { }
 
-  // async loadFaceApiScript(): Promise<void> {
-  //   return new Promise((resolve, reject) => {
-  //     const script = document.createElement('script');
-  //     script.src = 'https://cdn.jsdelivr.net/npm/face-api.js/dist/face-api.min.js';
-  //     script.onload = () => {
-  //       this.loadFaceApiModels();
-  //       resolve();
-  //     };
-  //     document.body.appendChild(script);
-  //   });
-  // }
-
   async loadFaceApiScript(): Promise<void> {
     if (document.querySelector('script[src="https://cdn.jsdelivr.net/npm/face-api.js/dist/face-api.min.js"]')) {
       return; // Script already loaded
