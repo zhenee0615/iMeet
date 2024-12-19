@@ -181,7 +181,7 @@ export class VideoCallComponent implements OnInit {
   roomId!: string;
 
   iceServers = {
-    iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
+    iceServers: [{ urls: 'stun:stun1.l.google.com:19302' }],
   };
 
   constructor(private route: ActivatedRoute) {}
