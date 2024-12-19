@@ -169,6 +169,7 @@ import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-video-call',
+  standalone: false,
   templateUrl: './video-call.component.html',
   styleUrls: ['./video-call.component.scss'],
 })
