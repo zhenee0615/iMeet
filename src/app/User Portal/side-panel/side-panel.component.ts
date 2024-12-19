@@ -85,6 +85,9 @@ export class SidePanelComponent {
     const url = this.router.url;
     const groupRouteRegex = /^\/user\/[a-zA-Z0-9]+\/group\/[a-zA-Z0-9]+$/;
     return groupRouteRegex.test(url); 
-    // return this.router.url.includes("general");
+  }
+
+  openMeeting() {
+    
   }
 }

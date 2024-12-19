@@ -67,6 +67,18 @@
         position: sticky;
         top: 0;
         z-index: 10000;
+
+        .tab-header {
+            padding: 0 4rem;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            // .open-meeting-btn {
+            //     margin-left: 16px;
+            // }
+        }
     }
 
     .content {

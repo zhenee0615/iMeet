@@ -40,10 +40,13 @@
       }
       <app-user-header></app-user-header>
       <ng-container *ngIf="isGroupRoute()">
-        <mat-tab-group (selectedTabChange)="onTabChange($event)">
-          <mat-tab label="General"></mat-tab>
-          <mat-tab label="Members"></mat-tab>
-        </mat-tab-group>
+        <div class="tab-header">
+          <mat-tab-group (selectedTabChange)="onTabChange($event)">
+            <mat-tab label="General"></mat-tab>
+            <mat-tab label="Members"></mat-tab>
+          </mat-tab-group>
+          <button mat-raised-button color="primary" class="open-meeting-btn" (click)="openMeeting()">Open Meeting</button>
+        </div>
       </ng-container>
     </mat-toolbar>
     <router-outlet></router-outlet>
