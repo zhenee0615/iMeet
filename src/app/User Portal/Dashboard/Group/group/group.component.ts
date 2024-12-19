@@ -1,6 +1,6 @@
 import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { Group } from '../../../../Models/group';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { GroupService } from '../../../../Services/group.service';
 import { SidePanelComponent } from '../../../side-panel/side-panel.component';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -9,6 +9,7 @@ import { Comment, Post } from '../../../../Models/post';
 import { UserService } from '../../../../Services/user.service';
 import { AddPostDialogComponent } from '../add-post-dialog/add-post-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { MeetingService } from '../../../../Services/meeting.service';
 
 @Component({
   selector: 'app-group',
@@ -23,6 +24,9 @@ export class GroupComponent implements OnInit {
   adminMember: any | null = null;
   activeTab: string = 'General';
   uid: string | null = null;
+  isMeetingOngoing: boolean = false;
+  roomId: string | null = null;
+  ongoingMeetings: any[] = [];
   postList: Post[] = [];
   membersList: any[] = [];
   displayedColumns: string[] = ['name', 'dateJoined', 'role'];
@@ -34,6 +38,8 @@ export class GroupComponent implements OnInit {
   private postService = inject(PostService);
   private userService = inject(UserService);
   private groupService = inject(GroupService);
+  private meetingService = inject(MeetingService);
+  private router = inject(Router);
 
   constructor(
     private route: ActivatedRoute,
@@ -62,6 +68,7 @@ export class GroupComponent implements OnInit {
 
     if (this.activeTab == "General") {
       this.subscribeToPosts();
+      this.loadOngoingMeetings();
     } else if (this.activeTab == "Members") {
       this.fetchGroupMembers();
     }
@@ -124,7 +131,6 @@ export class GroupComponent implements OnInit {
       this.isLoading = false;
     }
   }
-  
 
   toggleReplyInput(postId: string): void {
     this.showReplyInput[postId] = true;
@@ -181,5 +187,40 @@ export class GroupComponent implements OnInit {
 
   toggleCommentsVisibility(postId: string): void {
     this.showAllComments[postId] = !this.showAllComments[postId];
+  }
+
+  // listenForMeetingState() {
+  //   this.meetingService.listenForOngoingMeeting(this.groupId!, (ongoingMeeting) => {
+  //     if (ongoingMeeting) {
+  //       this.isMeetingOngoing = true;
+  //       this.roomId = ongoingMeeting.roomId;
+  //     } else {
+  //       this.isMeetingOngoing = false;
+  //       this.roomId = null;
+  //     }
+  //   });
+  // }
+  async loadOngoingMeetings() {
+    try {
+      const meetings = await this.meetingService.fetchOngoingMeetings(this.groupId!);
+
+      this.ongoingMeetings = await Promise.all(
+        meetings.map(async (meeting) => {
+          const hostName = await this.meetingService.fetchHostName(meeting.hostId);
+          return {
+            ...meeting,
+            hostName: hostName || 'Unknown Host',
+          };
+        })
+      );
+    } catch (error) {
+      console.error('Error loading ongoing meetings:', error);
+    }
+  }
+
+  joinMeeting(roomId: string) {
+    if (this.roomId) {
+      this.router.navigate(['/meeting', roomId]);
+    }
   }
 }

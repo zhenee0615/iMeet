@@ -10,6 +10,7 @@ import { DashboardComponent } from './User Portal/Dashboard/dashboard/dashboard.
 import { ProfileComponent } from './User Portal/Profile/profile/profile.component';
 import { ScheduleComponent } from './User Portal/Schedule/schedule/schedule.component';
 import { GroupComponent } from './User Portal/Dashboard/Group/group/group.component';
+import { VideoCallComponent } from './Video Conference/video-call/video-call.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -27,6 +28,7 @@ const routes: Routes = [
       { path: 'schedule', component: ScheduleComponent },
     ],
   },
+  { path: 'meeting/:roomId', component: VideoCallComponent },
   { path: '', component: MainpageComponent },
   { path: '', redirectTo: '/mainpage', pathMatch: 'full' },
   { path: '**', redirectTo: '/mainpage' },

@@ -57,6 +57,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { AddPostDialogComponent } from './User Portal/Dashboard/Group/add-post-dialog/add-post-dialog.component';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { getStorage, provideStorage } from '@angular/fire/storage';
+import { VideoCallComponent } from './Video Conference/video-call/video-call.component';
 
 @NgModule({
   declarations: [
@@ -92,7 +93,8 @@ import { getStorage, provideStorage } from '@angular/fire/storage';
     GroupComponent,
     GroupDialogComponent,
     ProfileDialogComponent,
-    AddPostDialogComponent
+    AddPostDialogComponent,
+    VideoCallComponent
   ],
   imports: [
     BrowserModule,

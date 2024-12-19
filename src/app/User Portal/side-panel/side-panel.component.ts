@@ -6,6 +6,7 @@ import { User } from '../../Models/user';
 import { AuthService } from '../../Services/auth.service';
 import { NavigationEnd, Router } from '@angular/router';
 import { UserService } from '../../Services/user.service';
+import { MeetingService } from '../../Services/meeting.service';
 
 interface MenuItem {
   name: string;
@@ -27,6 +28,7 @@ export class SidePanelComponent {
   userData: User | null = null;
   activeTab$: BehaviorSubject<string> = new BehaviorSubject('General');
   authService = inject(AuthService);
+  private meetingService = inject(MeetingService);
   items: MenuItem[] = [];
   private userDataSubject = new BehaviorSubject<User | null>(null);
   userData$ = this.userDataSubject.asObservable();
@@ -87,7 +89,8 @@ export class SidePanelComponent {
     return groupRouteRegex.test(url); 
   }
 
-  openMeeting() {
-    
+  async openMeeting() {
+    const newRoomId = await this.meetingService.openMeeting(this.router.url.split('/')[4], this.userData?.uid!);
+    this.router.navigate(['/meeting', newRoomId]);
   }
 }

@@ -1,0 +1,23 @@
+.video-container {
+  display: flex;
+  justify-content: space-around;
+
+  video {
+    width: 45%;
+    height: auto;
+    border: 2px solid #000;
+    border-radius: 8px;
+  }
+}
+
+.controls {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+}

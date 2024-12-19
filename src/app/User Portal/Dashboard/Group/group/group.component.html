@@ -84,6 +84,18 @@
         <button mat-fab color="primary" class="add-post-btn" (click)="openAddPostDialog()">
             <mat-icon>add</mat-icon>
         </button>
+
+        <div *ngIf="ongoingMeetings.length > 0; else noMeetingTemplate">
+            <div *ngFor="let meeting of ongoingMeetings" class="meeting-card">
+                <p>Meeting ID: {{ meeting.roomId }}</p>
+                <p>Host: {{ meeting.hostName }}</p>
+                <button (click)="joinMeeting(meeting.roomId)">Join Now</button>
+            </div>
+        </div>
+
+        <ng-template #noMeetingTemplate>
+            <p>No meetings are ongoing.</p>
+        </ng-template>
     </div>
 
     <div *ngIf="activeTab === 'Members'" class="members-section">
