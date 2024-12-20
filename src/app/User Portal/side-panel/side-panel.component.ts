@@ -7,6 +7,8 @@ import { AuthService } from '../../Services/auth.service';
 import { NavigationEnd, Router } from '@angular/router';
 import { UserService } from '../../Services/user.service';
 import { MeetingService } from '../../Services/meeting.service';
+import { VideoCallComponent } from '../../Video Conference/video-call/video-call.component';
+import { SignalingService } from '../../Services/signaling.service';
 
 interface MenuItem {
   name: string;
@@ -29,11 +31,15 @@ export class SidePanelComponent {
   activeTab$: BehaviorSubject<string> = new BehaviorSubject('General');
   authService = inject(AuthService);
   private meetingService = inject(MeetingService);
+  private signalingService = inject(SignalingService);
   items: MenuItem[] = [];
   private userDataSubject = new BehaviorSubject<User | null>(null);
   userData$ = this.userDataSubject.asObservable();
+  videoCallComponent!: VideoCallComponent;
+  pc!: RTCPeerConnection;
 
-  constructor(private breakpointObserver: BreakpointObserver, private router: Router, private userService: UserService) {
+
+  constructor(private breakpointObserver: BreakpointObserver, private router: Router, private userService: UserService, private signaling: SignalingService) {
     this.isHandset$ = this.breakpointObserver.observe(Breakpoints.Handset)
       .pipe(
         map(result => result.matches),
@@ -89,8 +95,14 @@ export class SidePanelComponent {
     return groupRouteRegex.test(url); 
   }
 
+  // async openMeeting() {
+  //   const newRoomId = await this.meetingService.openMeeting(this.router.url.split('/')[4], this.userData?.uid!);
+  //   this.router.navigate(['/meeting', newRoomId]);
+  // }
   async openMeeting() {
     const newRoomId = await this.meetingService.openMeeting(this.router.url.split('/')[4], this.userData?.uid!);
+    // this.signalingService.connect(newRoomId);
+    this.meetingService.startMeeting(newRoomId);
     this.router.navigate(['/meeting', newRoomId]);
   }
 }

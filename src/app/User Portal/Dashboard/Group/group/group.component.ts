@@ -9,7 +9,8 @@ import { Comment, Post } from '../../../../Models/post';
 import { UserService } from '../../../../Services/user.service';
 import { AddPostDialogComponent } from '../add-post-dialog/add-post-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { MeetingService } from '../../../../Services/meeting.service';
+import { Meeting, MeetingService } from '../../../../Services/meeting.service';
+import { SignalingService } from '../../../../Services/signaling.service';
 
 @Component({
   selector: 'app-group',
@@ -22,6 +23,7 @@ export class GroupComponent implements OnInit {
   groupId: string | null = null;
   group: Group | null = null;
   adminMember: any | null = null;
+  joinClickedRoom: string | null = null;
   activeTab: string = 'General';
   uid: string | null = null;
   isMeetingOngoing: boolean = false;
@@ -31,6 +33,7 @@ export class GroupComponent implements OnInit {
   membersList: any[] = [];
   displayedColumns: string[] = ['name', 'dateJoined', 'role'];
   isLoading: boolean = true;
+  joinClicked = false;
   postForm: FormGroup;
   showAllComments: { [postId: string]: boolean } = {};
   commentForms: { [key: string]: FormGroup } = {};
@@ -39,6 +42,7 @@ export class GroupComponent implements OnInit {
   private userService = inject(UserService);
   private groupService = inject(GroupService);
   private meetingService = inject(MeetingService);
+  private signalingService = inject(SignalingService);
   private router = inject(Router);
 
   constructor(
@@ -68,7 +72,15 @@ export class GroupComponent implements OnInit {
 
     if (this.activeTab == "General") {
       this.subscribeToPosts();
-      this.loadOngoingMeetings();
+      // this.loadOngoingMeetings();
+      this.meetingService.getOngoingMeetings$(this.groupId!).subscribe(meetings => {
+        this.ongoingMeetings = meetings;
+      });
+
+
+      this.meetingService.roomId$.subscribe(id => {
+        this.roomId = id;
+      });
     } else if (this.activeTab == "Members") {
       this.fetchGroupMembers();
     }
@@ -189,38 +201,29 @@ export class GroupComponent implements OnInit {
     this.showAllComments[postId] = !this.showAllComments[postId];
   }
 
-  // listenForMeetingState() {
-  //   this.meetingService.listenForOngoingMeeting(this.groupId!, (ongoingMeeting) => {
-  //     if (ongoingMeeting) {
-  //       this.isMeetingOngoing = true;
-  //       this.roomId = ongoingMeeting.roomId;
-  //     } else {
-  //       this.isMeetingOngoing = false;
-  //       this.roomId = null;
-  //     }
-  //   });
+  // async loadOngoingMeetings() {
+  //   try {
+  //     const meetings = await this.meetingService.fetchOngoingMeetings(this.groupId!);
+
+  //     this.ongoingMeetings = await Promise.all(
+  //       meetings.map(async (meeting) => {
+  //         const hostName = await this.meetingService.fetchHostName(meeting.hostId);
+  //         return {
+  //           ...meeting,
+  //           hostName: hostName || 'Unknown Host',
+  //         };
+  //       })
+  //     );
+  //   } catch (error) {
+  //     console.error('Error loading ongoing meetings:', error);
+  //   }
   // }
-  async loadOngoingMeetings() {
-    try {
-      const meetings = await this.meetingService.fetchOngoingMeetings(this.groupId!);
 
-      this.ongoingMeetings = await Promise.all(
-        meetings.map(async (meeting) => {
-          const hostName = await this.meetingService.fetchHostName(meeting.hostId);
-          return {
-            ...meeting,
-            hostName: hostName || 'Unknown Host',
-          };
-        })
-      );
-    } catch (error) {
-      console.error('Error loading ongoing meetings:', error);
-    }
-  }
-
+  // joinMeeting(roomId: string) {
+  //   this.router.navigate(['/meeting', roomId]);
+  // }
   joinMeeting(roomId: string) {
-    if (this.roomId) {
-      this.router.navigate(['/meeting', roomId]);
-    }
+    console.log("Join room:", roomId)
+    this.router.navigate(['/meeting', roomId]);
   }
 }

@@ -85,11 +85,17 @@
             <mat-icon>add</mat-icon>
         </button>
 
-        <div *ngIf="ongoingMeetings.length > 0; else noMeetingTemplate">
-            <div *ngFor="let meeting of ongoingMeetings" class="meeting-card">
+        <!-- <div *ngIf="ongoingMeetings.length > 0; else noMeetingTemplate">
+            <div *ngFor="let meeting of ongoingMeetings;" class="meeting-card">
                 <p>Meeting ID: {{ meeting.roomId }}</p>
                 <p>Host: {{ meeting.hostName }}</p>
                 <button (click)="joinMeeting(meeting.roomId)">Join Now</button>
+            </div>
+        </div> -->
+        <div *ngIf="ongoingMeetings && ongoingMeetings.length > 0; else noMeetingTemplate">
+            <div *ngFor="let meeting of ongoingMeetings">
+                <p>Meeting ongoing in room: {{ meeting.roomId }}</p>
+                <button (click)="joinMeeting(meeting.roomId)">Join now</button>
             </div>
         </div>
 
