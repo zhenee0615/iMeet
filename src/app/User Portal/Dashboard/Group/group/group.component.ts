@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Group } from '../../../../Models/group';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GroupService } from '../../../../Services/group.service';
@@ -9,8 +9,7 @@ import { Comment, Post } from '../../../../Models/post';
 import { UserService } from '../../../../Services/user.service';
 import { AddPostDialogComponent } from '../add-post-dialog/add-post-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { Meeting, MeetingService } from '../../../../Services/meeting.service';
-import { SignalingService } from '../../../../Services/signaling.service';
+import { MeetingService } from '../../../../Services/meeting.service';
 
 @Component({
   selector: 'app-group',
@@ -42,7 +41,6 @@ export class GroupComponent implements OnInit {
   private userService = inject(UserService);
   private groupService = inject(GroupService);
   private meetingService = inject(MeetingService);
-  private signalingService = inject(SignalingService);
   private router = inject(Router);
 
   constructor(
@@ -72,7 +70,6 @@ export class GroupComponent implements OnInit {
 
     if (this.activeTab == "General") {
       this.subscribeToPosts();
-      // this.loadOngoingMeetings();
       this.meetingService.getOngoingMeetings$(this.groupId!).subscribe(meetings => {
         this.ongoingMeetings = meetings;
       });
@@ -201,29 +198,9 @@ export class GroupComponent implements OnInit {
     this.showAllComments[postId] = !this.showAllComments[postId];
   }
 
-  // async loadOngoingMeetings() {
-  //   try {
-  //     const meetings = await this.meetingService.fetchOngoingMeetings(this.groupId!);
-
-  //     this.ongoingMeetings = await Promise.all(
-  //       meetings.map(async (meeting) => {
-  //         const hostName = await this.meetingService.fetchHostName(meeting.hostId);
-  //         return {
-  //           ...meeting,
-  //           hostName: hostName || 'Unknown Host',
-  //         };
-  //       })
-  //     );
-  //   } catch (error) {
-  //     console.error('Error loading ongoing meetings:', error);
-  //   }
-  // }
-
-  // joinMeeting(roomId: string) {
-  //   this.router.navigate(['/meeting', roomId]);
-  // }
-  joinMeeting(roomId: string) {
-    console.log("Join room:", roomId)
-    this.router.navigate(['/meeting', roomId]);
+  joinMeeting(callId: string) {
+    this.meetingService.joinMeeting(callId, this.sidePanel.userData?.uid!, this.sidePanel.userData?.fullName!).then(() => {
+      this.router.navigate(['/meeting', callId]);
+    });
   }
 }

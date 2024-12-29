@@ -4,11 +4,9 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { User } from '../../Models/user';
 import { AuthService } from '../../Services/auth.service';
-import { NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../Services/user.service';
 import { MeetingService } from '../../Services/meeting.service';
-import { VideoCallComponent } from '../../Video Conference/video-call/video-call.component';
-import { SignalingService } from '../../Services/signaling.service';
 
 interface MenuItem {
   name: string;
@@ -31,15 +29,12 @@ export class SidePanelComponent {
   activeTab$: BehaviorSubject<string> = new BehaviorSubject('General');
   authService = inject(AuthService);
   private meetingService = inject(MeetingService);
-  private signalingService = inject(SignalingService);
   items: MenuItem[] = [];
   private userDataSubject = new BehaviorSubject<User | null>(null);
   userData$ = this.userDataSubject.asObservable();
-  videoCallComponent!: VideoCallComponent;
-  pc!: RTCPeerConnection;
+  groupId: string | null = null;
 
-
-  constructor(private breakpointObserver: BreakpointObserver, private router: Router, private userService: UserService, private signaling: SignalingService) {
+  constructor(private breakpointObserver: BreakpointObserver, private router: Router, private userService: UserService, private route: ActivatedRoute) {
     this.isHandset$ = this.breakpointObserver.observe(Breakpoints.Handset)
       .pipe(
         map(result => result.matches),
@@ -95,14 +90,13 @@ export class SidePanelComponent {
     return groupRouteRegex.test(url); 
   }
 
-  // async openMeeting() {
-  //   const newRoomId = await this.meetingService.openMeeting(this.router.url.split('/')[4], this.userData?.uid!);
-  //   this.router.navigate(['/meeting', newRoomId]);
-  // }
   async openMeeting() {
-    const newRoomId = await this.meetingService.openMeeting(this.router.url.split('/')[4], this.userData?.uid!);
-    // this.signalingService.connect(newRoomId);
-    this.meetingService.startMeeting(newRoomId);
-    this.router.navigate(['/meeting', newRoomId]);
+    if (this.userData?.uid) {
+      const urlSegments = this.router.url.split('/').filter(segment => segment.length > 0);
+      this.groupId = urlSegments.length > 0 ? urlSegments[urlSegments.length - 1] : null;
+      const callId = await this.meetingService.createMeeting(this.groupId!, this.userData?.uid!, this.userData.fullName);
+      await this.meetingService.joinMeeting(callId, this.userData.uid, this.userData.fullName);
+      this.router.navigate(['/meeting', callId]);
+    }
   }
 }

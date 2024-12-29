@@ -1,9 +1,12 @@
-<!-- <div class="video-container">
-  <video id="localVideo" autoplay></video>
-  <video id="remoteVideo" autoplay playsinline></video>
-</div>
-<p>Room ID: {{ roomId }}</p> -->
-<div class="video-container">
-  <video #localVideo autoplay playsinline muted></video>
-  <video #remoteVideo autoplay playsinline></video>
-</div>
+<section>
+  <div class="participants">
+    <ng-container *ngFor="let participant of participants$ | async; trackBy: trackBySessionId">
+      <app-participant [participant]="participant"></app-participant>
+    </ng-container>
+  </div>
+  <div class="call-controls">
+    <button (click)="toggleMicrophone()">Mic</button>
+    <button (click)="toggleCamera()">Camera</button>
+    <button class="leave-button" (click)="leaveCall()">Leave</button>
+  </div>
+</section>

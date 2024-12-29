@@ -44,8 +44,6 @@ import { UserPortalComponent } from './User Portal/user-portal/user-portal.compo
 import { SidePanelComponent } from './User Portal/side-panel/side-panel.component';
 import { UserHeaderComponent } from './User Portal/user-header/user-header.component';
 import { DashboardComponent } from './User Portal/Dashboard/dashboard/dashboard.component';
-import { GeneralComponent } from './User Portal/Dashboard/Group/General/general/general.component';
-import { MemberComponent } from './User Portal/Dashboard/Group/Member/member/member.component';
 import { GroupComponent } from './User Portal/Dashboard/Group/group/group.component';
 import { ProfileComponent } from './User Portal/Profile/profile/profile.component';
 import { ScheduleComponent } from './User Portal/Schedule/schedule/schedule.component';
@@ -57,7 +55,9 @@ import { MatOptionModule } from '@angular/material/core';
 import { AddPostDialogComponent } from './User Portal/Dashboard/Group/add-post-dialog/add-post-dialog.component';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { getStorage, provideStorage } from '@angular/fire/storage';
+import { getFunctions, provideFunctions } from '@angular/fire/functions';
 import { VideoCallComponent } from './Video Conference/video-call/video-call.component';
+import { ParticipantComponent } from './Video Conference/participant/participant.component';
 
 @NgModule({
   declarations: [
@@ -88,13 +88,12 @@ import { VideoCallComponent } from './Video Conference/video-call/video-call.com
     DashboardComponent,
     ProfileComponent,
     ScheduleComponent,
-    GeneralComponent,
-    MemberComponent,
     GroupComponent,
     GroupDialogComponent,
     ProfileDialogComponent,
     AddPostDialogComponent,
-    VideoCallComponent
+    VideoCallComponent,
+    ParticipantComponent
   ],
   imports: [
     BrowserModule,
@@ -129,7 +128,9 @@ import { VideoCallComponent } from './Video Conference/video-call/video-call.com
       useValue: {
         subscriptSizing: 'dynamic'
       }
-    }
+    },
+    provideFirebaseApp(() => initializeApp({ projectId: "imeetproject", appId: "1:380268675238:web:945419d9d33567e7c23467", storageBucket: "imeetproject.firebasestorage.app", apiKey: "AIzaSyC1VlArwNGn7SeDNgihtVUpF9wFG0DDU3E", authDomain: "imeetproject.firebaseapp.com", messagingSenderId: "380268675238", measurementId: "G-82CVB0ZMTB" })),
+    provideFunctions(() => getFunctions())
   ],
   bootstrap: [AppComponent]
 })

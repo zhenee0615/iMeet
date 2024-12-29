@@ -1,74 +1,9 @@
-// import { Injectable, inject } from '@angular/core';
-// import { Firestore, collection, doc, getDocs, addDoc, updateDoc, query, where, serverTimestamp } from '@angular/fire/firestore';
-// import { UserService } from './user.service';
-
-// @Injectable({
-//   providedIn: 'root',
-// })
-// export class MeetingService {
-//   private firestore = inject(Firestore);
-//   private userService = inject(UserService);
-
-//   constructor() {}
-
-//   async fetchOngoingMeetings(groupId: string): Promise<any[]> {
-//     try {
-//       const meetingCollectionRef = collection(this.firestore, `groups/${groupId}/meetings`);
-//       const ongoingMeetingQuery = query(meetingCollectionRef, where('isOngoing', '==', true));
-//       const ongoingMeetingSnapshot = await getDocs(ongoingMeetingQuery);
-
-//       return ongoingMeetingSnapshot.docs.map(doc => ({
-//         id: doc.id,
-//         ...doc.data(),
-//       }));
-//     } catch (error) {
-//       console.error('Error fetching ongoing meetings:', error);
-//       return [];
-//     }
-//   }
-
-//   async fetchHostName(hostId: string): Promise<string> {
-//     const userData = await this.userService.getUserById(hostId);
-//     return userData?.fullName;
-//   }
-
-//   async openMeeting(groupId: string, hostId: string): Promise<string> {
-//     const meetingCollectionRef = collection(this.firestore, `groups/${groupId}/meetings`);
-//     const newRoomId = Math.random().toString(36).substr(2, 9);
-
-//     await addDoc(meetingCollectionRef, {
-//       isOngoing: true,
-//       roomId: newRoomId,
-//       startTime: serverTimestamp(),
-//       hostId: hostId,
-//     });
-
-//     return newRoomId;
-//   }
-
-//   async endMeeting(groupId: string, roomId: string): Promise<void> {
-//     const meetingDocRef = doc(this.firestore, `groups/${groupId}/meetings/${roomId}`);
-//     await updateDoc(meetingDocRef, {
-//       isOngoing: false,
-//       endTime: serverTimestamp(),
-//     });
-//   }
-
-//   // async fetchMeetingHistory(groupId: string): Promise<any[]> {
-//   //   const meetingCollectionRef = collection(this.firestore, `groups/${groupId}/meeting`);
-//   //   const meetingSnapshot = await getDocs(meetingCollectionRef);
-
-//   //   return meetingSnapshot.docs
-//   //     .map(doc => ({
-//   //       id: doc.id,
-//   //       ...doc.data(),
-//   //     }))
-//   //     .filter(meeting => !meeting.isOngoing);
-//   // }
-// }
 import { inject, Injectable } from '@angular/core';
-import { addDoc, collection, collectionData, Firestore, getDocs, query, serverTimestamp, where } from '@angular/fire/firestore';
+import { addDoc, collection, collectionData, doc, Firestore, query, where } from '@angular/fire/firestore';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { StreamVideoClient, Call } from '@stream-io/video-client';
+import { SignJWT } from 'jose';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface Meeting {
   roomId: string;
@@ -77,59 +12,121 @@ export interface Meeting {
 @Injectable({ providedIn: 'root' })
 export class MeetingService {
   private ongoingMeetingsSubject = new BehaviorSubject<Meeting[]>([]);
+  callSubject = new BehaviorSubject<Call | undefined>(undefined);
   ongoingMeetings$ = this.ongoingMeetingsSubject.asObservable();
   private firestore = inject(Firestore);
-
-  // Tracks the current meeting room ID
+  private client!: StreamVideoClient;
+  call$ = this.callSubject.asObservable();
   private roomIdSubject = new BehaviorSubject<string | null>(null);
   roomId$ = this.roomIdSubject.asObservable();
+  // private peerConnection!: RTCPeerConnection;
 
-  // async loadOngoingMeetingsFromFirestore(groupId: string) {
-  //   const meetingCollectionRef = collection(this.firestore, `groups/${groupId}/meetings`);
-  //   const ongoingMeetingQuery = query(meetingCollectionRef, where('isOngoing', '==', true));
-  //   const ongoingMeetingSnapshot = await getDocs(ongoingMeetingQuery);
-
-  //   const meetings = ongoingMeetingSnapshot.docs.map(doc => {
-  //     const data = doc.data() as any;
-  //     return { roomId: data.roomId } as Meeting;
-  //   });
-  //   this.ongoingMeetingsSubject.next(meetings);
-  // }
   getOngoingMeetings$(groupId: string): Observable<Meeting[]> {
     const meetingCollectionRef = collection(this.firestore, `groups/${groupId}/meetings`);
     const ongoingMeetingQuery = query(meetingCollectionRef, where('isOngoing', '==', true));
     return collectionData<Meeting>(ongoingMeetingQuery, { idField: 'id' });
   }
-  
-  startMeeting(roomId: string) {
-    const current = this.ongoingMeetingsSubject.getValue();
-    this.ongoingMeetingsSubject.next([...current, { roomId }]);
+
+  generateUserToken(userId: string): Promise<string> {
+    const secretKey = new TextEncoder().encode('xrbzf7tgauhbzr2u7mewp74krgb3djse2zw589awp38gbx7anvvrfgp343vdm877');
+    const token = new SignJWT({ user_id: userId })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuedAt()
+      .sign(secretKey);
+    console.log("token", token);
+    return token;
   }
 
-  endMeeting(roomId: string) {
-    const current = this.ongoingMeetingsSubject.getValue();
-    const updated = current.filter(m => m.roomId !== roomId);
-    this.ongoingMeetingsSubject.next(updated);
-  }
+  async createMeeting(groupId: string, userId: string, fullName: string): Promise<string> {
+    const callId = uuidv4();
+    const groupRef = doc(this.firestore, `groups/${groupId}`);
+    const meetingsCollection = collection(groupRef, 'meetings');
 
-  clearMeetings() {
-    this.ongoingMeetingsSubject.next([]);
-  }
-
-  async openMeeting(groupId: string, hostId: string): Promise<string> {
-    const meetingCollectionRef = collection(this.firestore, `groups/${groupId}/meetings`);
-    const newRoomId = Math.random().toString(36).substr(2, 9);
-
-    await addDoc(meetingCollectionRef, {
+    await addDoc(meetingsCollection, {
+      callId,
+      hostId: userId,
       isOngoing: true,
-      roomId: newRoomId,
-      startTime: serverTimestamp(),
-      hostId: hostId,
+      createdAt: new Date(),
+    });
+    const token = await this.generateUserToken(userId);
+    this.client = StreamVideoClient.getOrCreateInstance({
+      apiKey: 'zrwqew8gkfrb',
+      user: { id: userId, name: fullName },
+      token,
     });
 
-    // Add the meeting to the ongoingMeetings$
-    this.startMeeting(newRoomId);
-
-    return newRoomId;
+    const call = this.client.call('default', callId);
+    await call.getOrCreate({
+      data: {
+        members: [{ user_id: userId, role: 'admin' }]
+      },
+    });
+    // this.setupPeerConnection();
+    this.callSubject.next(call);
+    return callId;
   }
+
+  async joinMeeting(callId: string, userId: string, fullName: string): Promise<void> {
+    const token = await this.generateUserToken(userId);
+
+    this.client = StreamVideoClient.getOrCreateInstance({
+      apiKey: 'zrwqew8gkfrb',
+      user: { id: userId, name: fullName },
+      token,
+    });
+
+    const call = this.client.call('default', callId);
+
+    await call.join({
+      create: false,
+      data: {
+        settings_override: {
+          audio: { mic_default_on: true, default_device: "speaker" },
+          video: { camera_default_on: true,
+            target_resolution: { width: 640, height: 480 } },
+        },
+      },
+    });
+    // this.setupPeerConnection();
+    await call.camera.enable();
+    await call.microphone.enable();
+    this.callSubject.next(call);
+  }
+
+  leaveMeeting(): void {
+    const currentCall = this.callSubject.getValue();
+    if (currentCall) {
+      currentCall.leave();
+      this.callSubject.next(undefined);
+    }
+    // this.closePeerConnection();
+  }
+
+  // private setupPeerConnection(): void {
+  //   const rtcConfig = {
+  //     iceServers: [
+  //       { urls: 'stun:stun.l.google.com:19302' },
+  //       { urls: 'stun:stun1.l.google.com:19302' },
+  //     ],
+  //   };
+
+  //   this.peerConnection = new RTCPeerConnection(rtcConfig);
+
+  //   this.peerConnection.onicecandidate = (event) => {
+  //     if (event.candidate) {
+  //       console.log("New ICE candidate: ", event.candidate);
+  //     }
+  //   };
+
+  //   this.peerConnection.onconnectionstatechange = () => {
+  //     console.log("Connection state: ", this.peerConnection.connectionState);
+  //   };
+  // }
+
+  // private closePeerConnection(): void {
+  //   if (this.peerConnection) {
+  //     this.peerConnection.close();
+  //     console.log("Peer connection closed");
+  //   }
+  // }
 }
