@@ -94,7 +94,7 @@ export class SidePanelComponent {
     if (this.userData?.uid) {
       const urlSegments = this.router.url.split('/').filter(segment => segment.length > 0);
       this.groupId = urlSegments.length > 0 ? urlSegments[urlSegments.length - 1] : null;
-      const callId = await this.meetingService.createMeeting(this.groupId!, this.userData?.uid!, this.userData.fullName);
+      const callId = await this.meetingService.createMeeting(this.groupId!, this.userData?.uid!, this.userData.fullName, this.userData.profilePicUrl);
       await this.meetingService.joinMeeting(callId, this.userData.uid, this.userData.fullName);
       this.router.navigate(['/meeting', callId]);
     }

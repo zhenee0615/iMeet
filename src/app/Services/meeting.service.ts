@@ -19,7 +19,10 @@ export class MeetingService {
   call$ = this.callSubject.asObservable();
   private roomIdSubject = new BehaviorSubject<string | null>(null);
   roomId$ = this.roomIdSubject.asObservable();
-  // private peerConnection!: RTCPeerConnection;
+
+  call(): Call | undefined {
+    return this.callSubject.getValue();
+  }
 
   getOngoingMeetings$(groupId: string): Observable<Meeting[]> {
     const meetingCollectionRef = collection(this.firestore, `groups/${groupId}/meetings`);
@@ -37,7 +40,7 @@ export class MeetingService {
     return token;
   }
 
-  async createMeeting(groupId: string, userId: string, fullName: string): Promise<string> {
+  async createMeeting(groupId: string, userId: string, fullName: string, pic: string): Promise<string> {
     const callId = uuidv4();
     const groupRef = doc(this.firestore, `groups/${groupId}`);
     const meetingsCollection = collection(groupRef, 'meetings');
@@ -51,7 +54,7 @@ export class MeetingService {
     const token = await this.generateUserToken(userId);
     this.client = StreamVideoClient.getOrCreateInstance({
       apiKey: 'zrwqew8gkfrb',
-      user: { id: userId, name: fullName },
+      user: { id: userId, name: fullName, image: pic },
       token,
     });
 
@@ -61,7 +64,6 @@ export class MeetingService {
         members: [{ user_id: userId, role: 'admin' }]
       },
     });
-    // this.setupPeerConnection();
     this.callSubject.next(call);
     return callId;
   }
@@ -87,7 +89,6 @@ export class MeetingService {
         },
       },
     });
-    // this.setupPeerConnection();
     await call.camera.enable();
     await call.microphone.enable();
     this.callSubject.next(call);
@@ -99,7 +100,6 @@ export class MeetingService {
       currentCall.leave();
       this.callSubject.next(undefined);
     }
-    // this.closePeerConnection();
   }
 
   // private setupPeerConnection(): void {
