@@ -95,6 +95,7 @@ export class MeetingService {
     const participantDocRef = doc(this.firestore, `calls/${callId}/participants/${userId}`);
     await setDoc(participantDocRef, {
       isCameraOn: true,
+      isMicOn: true,
       userId: userId,
       fullName: fullName,
     });
@@ -109,9 +110,9 @@ export class MeetingService {
     }
   }
 
-  updateCameraStatus(callId: string, userId: string, isCameraOn: boolean) {
+  updateParticipantStatus(callId: string, userId: string, isCameraOn: boolean, isMicOn: boolean) {
     const participantDocRef = doc(this.firestore, `calls/${callId}/participants/${userId}`);
-    return setDoc(participantDocRef, { isCameraOn }, { merge: true });
+    return setDoc(participantDocRef, { isCameraOn, isMicOn }, { merge: true });
   }
 
   removeParticipant(callId: string, userId: string) {
@@ -119,11 +120,14 @@ export class MeetingService {
     return deleteDoc(participantDocRef);
   }
 
-  getParticipantsCameraStatus$(callId: string): Observable<{ [key: string]: boolean }> {
+  getParticipantsStatus$(callId: string): Observable<{ [key: string]: { isCameraOn: boolean, isMicOn: boolean } }> {
     const participantsCollectionRef = collection(this.firestore, `calls/${callId}/participants`);
     return collectionData(participantsCollectionRef).pipe(
       map((data: any) => data.reduce((acc: any, participant: any) => {
-        acc[participant.userId] = participant.isCameraOn;
+        acc[participant.userId] = {
+          isCameraOn: participant.isCameraOn,
+          isMicOn: participant.isMicOn,
+        };
         return acc;
       }, {}))
     );

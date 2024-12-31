@@ -16,14 +16,15 @@ export class ParticipantComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('videoElement') videoElement!: ElementRef<HTMLVideoElement>;
   @ViewChild('audioElement') audioElement!: ElementRef<HTMLAudioElement>;
   @Input() participant!: StreamVideoParticipant;
-  @Input() cameraStatus$!: Observable<{ [key: string]: boolean }>;
+  @Input() participantStatus$!: Observable<{ [key: string]: { isCameraOn: boolean, isMicOn: boolean } }>;
   @Input() totalParticipants!: number;
   private userSubscription?: Subscription;
-  private cameraStatusSubscription!: Subscription;
+  private statusSubscription!: Subscription;
   private userService = inject(UserService);
-  cameraStatus: { [key: string]: boolean } = {};
   randomColor: string = '';
   profilePicUrl: string = '';
+  cameraOn = true;
+  micOn = true;
 
   private unbindVideoElement?: () => void;
   private unbindAudioElement?: () => void;
@@ -45,13 +46,12 @@ export class ParticipantComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     this.randomColor = this.generateRandomColorWithContrast('#3e3e3e');
 
-    if (this.cameraStatus$) {
-      this.cameraStatusSubscription = this.cameraStatus$.subscribe((status) => {
-        this.cameraStatus = status;
-      });
-    } else {
-      console.warn('cameraStatus$ is not provided.');
-    }
+    this.statusSubscription = this.participantStatus$.subscribe(status => {
+      if (status[this.participant.userId]) {
+        this.cameraOn = status[this.participant.userId].isCameraOn;
+        this.micOn = status[this.participant.userId].isMicOn;
+      }
+    });
   }
 
   ngAfterViewInit(): void {
@@ -83,23 +83,25 @@ export class ParticipantComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
     }
-    if (this.cameraStatusSubscription) {
-      this.cameraStatusSubscription.unsubscribe();
+    if (this.statusSubscription) {
+      this.statusSubscription?.unsubscribe();
+
     }
   }
 
   isMicOn(participant: StreamVideoParticipant): boolean {
-    const tracks = participant.audioStream?.getAudioTracks();
-    if (tracks && tracks.length > 0) {
-      const audioTrack = tracks[0];
-      const isAudioEnabled: boolean = audioTrack.enabled && audioTrack.readyState === 'live';
-      return isAudioEnabled;
-    }
-    return false;
+    // const tracks = participant.audioStream?.getAudioTracks();
+    // if (tracks && tracks.length > 0) {
+    //   const audioTrack = tracks[0];
+    //   const isAudioEnabled: boolean = audioTrack.enabled && audioTrack.readyState === 'live';
+    //   return isAudioEnabled;
+    // }
+    // return false;
+    return this.micOn ?? false; 
   }
 
   isCameraOn(participant: StreamVideoParticipant): boolean {
-    return this.cameraStatus[participant.userId] ?? false;
+    return this.cameraOn ?? false;
   }
 
   generateRandomColorWithContrast(backgroundColor: string): string {

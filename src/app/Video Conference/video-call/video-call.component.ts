@@ -17,7 +17,7 @@ import { Group } from '../../Models/group';
 export class VideoCallComponent implements OnDestroy, OnInit {
   @Input({ required: true }) call!: Call;
   participants$!: Observable<StreamVideoParticipant[]>;
-  participantsCameraStatus$!: Observable<{ [key: string]: boolean }>;
+  participantsStatus$!: Observable<{ [key: string]: { isCameraOn: boolean, isMicOn: boolean } }>;
   private durationIntervalId!: ReturnType<typeof setInterval>;
   private meetingService = inject(MeetingService);
   private groupService = inject(GroupService);
@@ -39,7 +39,7 @@ export class VideoCallComponent implements OnDestroy, OnInit {
       if (call) {
         this.call = call;
         this.participants$ = this.call.state.participants$;
-        this.participantsCameraStatus$ = this.meetingService.getParticipantsCameraStatus$(call.id);
+        this.participantsStatus$ = this.meetingService.getParticipantsStatus$(call.id);
       } else {
         console.error('No active call found.');
       }
@@ -97,13 +97,24 @@ export class VideoCallComponent implements OnDestroy, OnInit {
   }
 
   toggleMicrophone() {
+    // if (!this.call) return;
+    // if (this.call.microphone.enabled) {
+    //   this.micOn = false;
+    // } else {
+    //   this.micOn = true;
+    // }
+    // this.call.microphone.toggle();
     if (!this.call) return;
+    this.uid = this.route.snapshot.paramMap.get('uid');
     if (this.call.microphone.enabled) {
+      this.call.microphone.disable();
       this.micOn = false;
+      this.meetingService.updateParticipantStatus(this.call.id, this.uid!, this.cameraOn, false);
     } else {
+      this.call.microphone.enable();
       this.micOn = true;
+      this.meetingService.updateParticipantStatus(this.call.id, this.uid!, this.cameraOn, true);
     }
-    this.call.microphone.toggle();
   }
 
   async toggleCamera() {
@@ -117,9 +128,8 @@ export class VideoCallComponent implements OnDestroy, OnInit {
       await this.call.camera.enable();
       this.cameraOn = true;
     }
-    console.log(this.cameraOn)
 
-    await this.meetingService.updateCameraStatus(this.call.id, this.uid, this.cameraOn);
+    await this.meetingService.updateParticipantStatus(this.call.id, this.uid, this.cameraOn, this.micOn);
   }
 
   leaveCall() {

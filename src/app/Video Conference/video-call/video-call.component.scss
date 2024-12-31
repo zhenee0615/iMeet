@@ -93,10 +93,11 @@ section {
       border: none;
       border-radius: 8px;
       cursor: pointer;
+      background-color: white;
       transition: background-color 0.3s;
 
       &:hover {
-        background-color: #e0e0e0;
+        background-color: #d9d8d8;
       }
 
       &.leave-button {
