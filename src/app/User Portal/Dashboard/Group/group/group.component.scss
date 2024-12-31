@@ -271,4 +271,59 @@
             }
         }
     }
+
+    .meeting-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem !important; // uniform spacing
+
+        .meeting-left {
+            display: flex;
+            flex-direction: column; // stack title on top, avatar below
+
+            .meeting-title {
+                margin: 0;
+                margin-bottom: 0.8rem;
+                font-size: 1rem;
+                color: #ffffff;
+            }
+
+            .meeting-bottom {
+                display: flex;
+                align-items: center;
+
+                .meeting-details {
+                    margin-left: 1rem;
+
+                    .host-name {
+                    margin: 0.2rem 0;
+                    font-size: 1rem;
+                    color: #bbbbbb;
+                    }
+
+                    .meeting-duration {
+                    margin: 0;
+                    font-size: 0.9rem;
+                    color: #bbbbbb;
+                    }
+                }
+            }
+        }
+
+        .meeting-right {
+            button {
+                background-color: #006bc2;
+                color: #ffffff;
+                padding: 0.5rem 1rem;
+                border: none;
+                border-radius: 1.5rem;
+                cursor: pointer;
+
+                &:hover {
+                    background-color: #005295;
+                }
+            }
+        }
+    }
 }

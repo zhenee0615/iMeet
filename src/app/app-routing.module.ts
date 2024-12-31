@@ -28,7 +28,7 @@ const routes: Routes = [
       { path: 'schedule', component: ScheduleComponent },
     ],
   },
-  { path: 'meeting/:callId', component: VideoCallComponent },
+  { path: 'meeting/:uid/:groupId/:callId', component: VideoCallComponent },
   { path: '', component: MainpageComponent },
   { path: '', redirectTo: '/mainpage', pathMatch: 'full' },
   { path: '**', redirectTo: '/mainpage' },

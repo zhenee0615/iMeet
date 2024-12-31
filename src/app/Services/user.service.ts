@@ -37,7 +37,7 @@ export class UserService {
     return await getDownloadURL(uploadResult.ref);
   }
 
-  async getUserById(userId: string): Promise<any> {
+  async getUserById(userId: string): Promise<User | null> {
     try {
       const userCollectionRef = collection(this.firestore, this.collectionName);
       const q = query(userCollectionRef, where('uid', '==', userId));
@@ -47,9 +47,12 @@ export class UserService {
         const userDoc = querySnapshot.docs[0];
         const userData = { ...userDoc.data() } as User;
         return userData;
+      } else {
+        return null
       }
     } catch (error) {
       this.notificationService.showNotification("Unable to retrieve user data. Please try logging in again.", 'error-snackbar');
+      return null
     }
   }
 

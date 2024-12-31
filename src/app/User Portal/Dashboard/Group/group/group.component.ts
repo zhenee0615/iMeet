@@ -10,6 +10,14 @@ import { UserService } from '../../../../Services/user.service';
 import { AddPostDialogComponent } from '../add-post-dialog/add-post-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MeetingService } from '../../../../Services/meeting.service';
+import { Subscription } from 'rxjs';
+
+interface Meeting {
+  callId: string;
+  hostId: string;
+  isOngoing: boolean;
+  createdAt: any;
+}
 
 @Component({
   selector: 'app-group',
@@ -37,6 +45,8 @@ export class GroupComponent implements OnInit {
   showAllComments: { [postId: string]: boolean } = {};
   commentForms: { [key: string]: FormGroup } = {};
   showReplyInput: { [key: string]: boolean } = {};
+  private meetingSubscription!: Subscription;
+  private intervalId!: ReturnType<typeof setInterval>;
   private postService = inject(PostService);
   private userService = inject(UserService);
   private groupService = inject(GroupService);
@@ -70,18 +80,68 @@ export class GroupComponent implements OnInit {
 
     if (this.activeTab == "General") {
       this.subscribeToPosts();
-      this.meetingService.getOngoingMeetings$(this.groupId!).subscribe(meetings => {
-        this.ongoingMeetings = meetings;
-      });
+      this.meetingSubscription = this.meetingService
+        .getOngoingMeetings$(this.groupId!)
+        .subscribe(async (meetings) => {
+          // For each meeting, fetch host user info once.
+          const enriched = await Promise.all(
+            meetings.map(async (m) => {
+              const user = await this.userService.getUserById(m.hostId);
+              return {
+                ...m,
+                hostName: user?.fullName ?? 'Unknown Host',
+                hostProfilePicUrl: user?.profilePicUrl ?? 'default.png',
+                createdAtDate: m.createdAt?.toDate
+                  ? m.createdAt.toDate()
+                  : new Date(m.createdAt),
+              };
+            })
+          );
+          this.ongoingMeetings = enriched;
+          this.updateDurations();
+        });
 
+      this.intervalId = setInterval(() => {
+        this.updateDurations();
+      }, 1000);
 
-      this.meetingService.roomId$.subscribe(id => {
-        this.roomId = id;
-      });
     } else if (this.activeTab == "Members") {
       this.fetchGroupMembers();
     }
   }
+
+  private updateDurations() {
+  const now = new Date();
+
+  this.ongoingMeetings.forEach((meeting) => {
+    const diffMs = now.getTime() - meeting.createdAtDate.getTime();
+    const totalSeconds = Math.floor(diffMs / 1000);
+
+    // Break down into days/hours/minutes/seconds
+    const days = Math.floor(totalSeconds / 86400); // 86400 = 24*60*60
+    const remainderAfterDays = totalSeconds % 86400;
+    const hours = Math.floor(remainderAfterDays / 3600); // 3600 = 60*60
+    const remainderAfterHours = remainderAfterDays % 3600;
+    const minutes = Math.floor(remainderAfterHours / 60);
+    const seconds = remainderAfterHours % 60;
+
+    // Format logic
+    if (days > 0) {
+      // More than 1 day
+      meeting.duration = `${days} days ${hours} hours`;
+    } else if (hours > 0) {
+      // More than 1 hour but less than 1 day
+      meeting.duration = `${hours} hours ${minutes} min`;
+    } else if (minutes > 0) {
+      // More than 1 minute but less than 1 hour
+      meeting.duration = `${minutes} min ${seconds} seconds`;
+    } else {
+      // Less than 1 minute => seconds
+      meeting.duration = `${seconds} seconds`;
+    }
+  });
+}
+
 
   subscribeToPosts() {
     this.isLoading = true;
@@ -200,7 +260,7 @@ export class GroupComponent implements OnInit {
 
   joinMeeting(callId: string) {
     this.meetingService.joinMeeting(callId, this.sidePanel.userData?.uid!, this.sidePanel.userData?.fullName!).then(() => {
-      this.router.navigate(['/meeting', callId]);
+      this.router.navigate(['/meeting', this.sidePanel.userData?.uid!, this.groupId, callId]);
     });
   }
 }

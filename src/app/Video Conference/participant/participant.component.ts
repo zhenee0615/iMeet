@@ -1,6 +1,8 @@
-import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { StreamVideoParticipant } from '@stream-io/video-client';
 import { MeetingService } from '../../Services/meeting.service';
+import { Observable, Subscription } from 'rxjs';
+import { UserService } from '../../Services/user.service';
 
 @Component({
   selector: 'app-participant',
@@ -10,101 +12,60 @@ import { MeetingService } from '../../Services/meeting.service';
   styleUrl: './participant.component.scss'
 })
 
-// export class ParticipantComponent implements AfterViewInit {
-//   @ViewChild('videoElement') videoElement!: ElementRef<HTMLVideoElement>;
-//   @ViewChild('audioElement') audioElement!: ElementRef<HTMLAudioElement>;
-//   @Input() participant!: StreamVideoParticipant;
-
-//   ngAfterViewInit(): void {
-//     console.log('Participant video stream:', this.participant.videoStream);
-//     console.log('Participant audio stream:', this.participant.audioStream);
-
-//     const videoStream = this.participant.videoStream;
-//     if (videoStream) {
-//       this.videoElement.nativeElement.srcObject = videoStream;
-//       this.videoElement.nativeElement.play().catch(error => {
-//         console.error('Error playing video:', error);
-//       });
-//     }
-
-//     const audioStream = this.participant.audioStream;
-//     if (audioStream) {
-//       this.audioElement.nativeElement.srcObject = audioStream;
-//       this.audioElement.nativeElement.play().catch(error => {
-//         console.error('Error playing audio:', error);
-//       });
-//     }
-//   }
-
-//   // ngOnChanges(changes: SimpleChanges): void {
-//   //   if (changes['participant'] && this.isViewInitialized) {
-//   //     this.updateStreams();
-//   //   }
-//   // }
-
-//   // updateStreams(): void {
-//   //   if (this.participant.videoStream) {
-//   //     this.videoElement.nativeElement.srcObject = this.participant.videoStream;
-//   //     this.videoElement.nativeElement.play().catch(error => {
-//   //       console.error('Error playing video:', error);
-//   //     });
-//   //   } else {
-//   //     console.warn('Participant videoStream is undefined:', this.participant);
-//   //   }
-
-//   //   if (this.participant.audioStream) {
-//   //     this.audioElement.nativeElement.srcObject = this.participant.audioStream;
-//   //     this.audioElement.nativeElement.play().catch(error => {
-//   //       console.error('Error playing audio:', error);
-//   //     });
-//   //   } else {
-//   //     console.warn('Participant audioStream is undefined:', this.participant);
-//   //   }
-//   // }
-
-//   ngOnDestroy(): void {
-//     const videoElement = this.videoElement.nativeElement;
-//     const videoStream = videoElement.srcObject as MediaStream;
-//     if (videoStream) {
-//       videoStream.getTracks().forEach((track) => track.stop());
-//       videoElement.srcObject = null;
-//     }
-
-//     const audioElement = this.audioElement.nativeElement;
-//     const audioStream = audioElement.srcObject as MediaStream;
-//     if (audioStream) {
-//       audioStream.getTracks().forEach((track) => track.stop());
-//       audioElement.srcObject = null;
-//     }
-//   }
-// }
-export class ParticipantComponent implements AfterViewInit, OnDestroy {
+export class ParticipantComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('videoElement') videoElement!: ElementRef<HTMLVideoElement>;
   @ViewChild('audioElement') audioElement!: ElementRef<HTMLAudioElement>;
   @Input() participant!: StreamVideoParticipant;
+  @Input() cameraStatus$!: Observable<{ [key: string]: boolean }>;
+  private userSubscription?: Subscription;
+  private cameraStatusSubscription!: Subscription;
+  private userService = inject(UserService);
+  cameraStatus: { [key: string]: boolean } = {};
+  randomColor: string = '';
+  profilePicUrl: string = '';
 
-  // We keep track of the unbind function references so we can clean them up
   private unbindVideoElement?: () => void;
   private unbindAudioElement?: () => void;
 
-  constructor(private meetingService: MeetingService) {}
+  constructor(private meetingService: MeetingService) { }
+  
+  ngOnInit(): void {
+    const userId = this.participant.userId; 
+    if (userId) {
+      this.userService.getUserById(userId)
+        .then(user => {
+          if (user?.profilePicUrl) {
+            this.profilePicUrl = user.profilePicUrl;
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching user data:', error);
+        });
+    }
+    this.randomColor = this.generateRandomColorWithContrast('#3e3e3e');
+
+    if (this.cameraStatus$) {
+      this.cameraStatusSubscription = this.cameraStatus$.subscribe((status) => {
+        this.cameraStatus = status;
+      });
+    } else {
+      console.warn('cameraStatus$ is not provided.');
+    }
+  }
 
   ngAfterViewInit(): void {
-    // Retrieve the current call
     const call = this.meetingService.call();
     if (!call) {
       console.error('No active call found in meetingService');
       return;
     }
 
-    // Bind the <video> element to this participant
     this.unbindVideoElement = call.bindVideoElement(
       this.videoElement.nativeElement,
       this.participant.sessionId,
       'videoTrack', 
     );
 
-    // Bind the <audio> element to this participant
     this.unbindAudioElement = call.bindAudioElement(
       this.audioElement.nativeElement,
       this.participant.sessionId,
@@ -112,12 +73,63 @@ export class ParticipantComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // Unbind/cleanup your video/audio track bindings
     if (this.unbindVideoElement) {
       this.unbindVideoElement();
     }
     if (this.unbindAudioElement) {
       this.unbindAudioElement();
     }
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
+    if (this.cameraStatusSubscription) {
+      this.cameraStatusSubscription.unsubscribe();
+    }
+  }
+
+  isMicOn(participant: StreamVideoParticipant): boolean {
+    const tracks = participant.audioStream?.getAudioTracks();
+    if (tracks && tracks.length > 0) {
+      const audioTrack = tracks[0];
+      const isAudioEnabled: boolean = audioTrack.enabled && audioTrack.readyState === 'live';
+      return isAudioEnabled;
+    }
+    return false;
+  }
+
+  isCameraOn(participant: StreamVideoParticipant): boolean {
+    // const tracks = participant.videoStream?.getVideoTracks();
+    // if (tracks && tracks.length > 0) {
+    //   const videoTrack = tracks[0];
+    //   // console.log(participant.name, videoTrack);
+    //   return videoTrack.enabled && videoTrack.readyState === 'live';
+    // }
+    // return false;
+    return this.cameraStatus[participant.userId] ?? false;
+  }
+
+  generateRandomColorWithContrast(backgroundColor: string): string {
+    const bgColor = parseInt(backgroundColor.replace('#', ''), 16);
+    const bgRed = (bgColor >> 16) & 0xff;
+    const bgGreen = (bgColor >> 8) & 0xff;
+    const bgBlue = bgColor & 0xff;
+
+    let randomColor: string;
+    let contrast: number;
+
+    do {
+      const red = Math.floor(Math.random() * 150);
+      const green = Math.floor(Math.random() * 150);
+      const blue = Math.floor(Math.random() * 150);
+
+      randomColor = `#${red.toString(16).padStart(2, '0')}${green
+        .toString(16)
+        .padStart(2, '0')}${blue.toString(16).padStart(2, '0')}`;
+
+      contrast =
+        Math.abs((0.299 * red + 0.587 * green + 0.114 * blue) - (0.299 * bgRed + 0.587 * bgGreen + 0.114 * bgBlue));
+    } while (contrast < 30);
+
+    return randomColor;
   }
 }

@@ -1,12 +1,15 @@
 import { inject, Injectable } from '@angular/core';
-import { addDoc, collection, collectionData, doc, Firestore, query, where } from '@angular/fire/firestore';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { addDoc, collection, collectionData, deleteDoc, doc, Firestore, query, setDoc, where } from '@angular/fire/firestore';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 import { StreamVideoClient, Call } from '@stream-io/video-client';
 import { SignJWT } from 'jose';
 import { v4 as uuidv4 } from 'uuid';
 
-export interface Meeting {
-  roomId: string;
+interface Meeting {
+  callId: string;
+  hostId: string;
+  isOngoing: boolean;
+  createdAt: any;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -17,8 +20,6 @@ export class MeetingService {
   private firestore = inject(Firestore);
   private client!: StreamVideoClient;
   call$ = this.callSubject.asObservable();
-  private roomIdSubject = new BehaviorSubject<string | null>(null);
-  roomId$ = this.roomIdSubject.asObservable();
 
   call(): Call | undefined {
     return this.callSubject.getValue();
@@ -85,12 +86,18 @@ export class MeetingService {
         settings_override: {
           audio: { mic_default_on: true, default_device: "speaker" },
           video: { camera_default_on: true,
-            target_resolution: { width: 640, height: 480 } },
+            target_resolution: { width: 1920, height: 1080 } },
         },
       },
     });
     await call.camera.enable();
     await call.microphone.enable();
+    const participantDocRef = doc(this.firestore, `calls/${callId}/participants/${userId}`);
+    await setDoc(participantDocRef, {
+      isCameraOn: true,
+      userId: userId,
+      fullName: fullName,
+    });
     this.callSubject.next(call);
   }
 
@@ -102,31 +109,23 @@ export class MeetingService {
     }
   }
 
-  // private setupPeerConnection(): void {
-  //   const rtcConfig = {
-  //     iceServers: [
-  //       { urls: 'stun:stun.l.google.com:19302' },
-  //       { urls: 'stun:stun1.l.google.com:19302' },
-  //     ],
-  //   };
+  updateCameraStatus(callId: string, userId: string, isCameraOn: boolean) {
+    const participantDocRef = doc(this.firestore, `calls/${callId}/participants/${userId}`);
+    return setDoc(participantDocRef, { isCameraOn }, { merge: true });
+  }
 
-  //   this.peerConnection = new RTCPeerConnection(rtcConfig);
+  removeParticipant(callId: string, userId: string) {
+    const participantDocRef = doc(this.firestore, `calls/${callId}/participants/${userId}`);
+    return deleteDoc(participantDocRef);
+  }
 
-  //   this.peerConnection.onicecandidate = (event) => {
-  //     if (event.candidate) {
-  //       console.log("New ICE candidate: ", event.candidate);
-  //     }
-  //   };
-
-  //   this.peerConnection.onconnectionstatechange = () => {
-  //     console.log("Connection state: ", this.peerConnection.connectionState);
-  //   };
-  // }
-
-  // private closePeerConnection(): void {
-  //   if (this.peerConnection) {
-  //     this.peerConnection.close();
-  //     console.log("Peer connection closed");
-  //   }
-  // }
+  getParticipantsCameraStatus$(callId: string): Observable<{ [key: string]: boolean }> {
+    const participantsCollectionRef = collection(this.firestore, `calls/${callId}/participants`);
+    return collectionData(participantsCollectionRef).pipe(
+      map((data: any) => data.reduce((acc: any, participant: any) => {
+        acc[participant.userId] = participant.isCameraOn;
+        return acc;
+      }, {}))
+    );
+  }
 }

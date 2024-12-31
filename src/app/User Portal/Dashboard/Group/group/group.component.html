@@ -84,17 +84,6 @@
         <button mat-fab color="primary" class="add-post-btn" (click)="openAddPostDialog()">
             <mat-icon>add</mat-icon>
         </button>
-
-        <div *ngIf="ongoingMeetings && ongoingMeetings.length > 0; else noMeetingTemplate">
-            <div *ngFor="let meeting of ongoingMeetings">
-                <p>Meeting ongoing in room: {{ meeting.callId }}</p>
-                <button (click)="joinMeeting(meeting.callId)">Join now</button>
-            </div>
-        </div>
-
-        <ng-template #noMeetingTemplate>
-            <p>No meetings are ongoing.</p>
-        </ng-template>
     </div>
 
     <div *ngIf="activeTab === 'Members'" class="members-section">
@@ -126,5 +115,34 @@
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
+    </div>
+
+    <div *ngIf="activeTab === 'Meetings'">
+        <div
+            *ngFor="let meeting of ongoingMeetings" 
+            class="post-card meeting-card"
+            >
+            <div class="meeting-left">
+                <h3 class="meeting-title">Ongoing Meeting</h3>
+                <div class="meeting-bottom">
+                    <div class="post-avatar">
+                        <img [src]="meeting.hostProfilePicUrl" alt="Host Avatar" />
+                    </div>
+
+                    <div class="meeting-details">
+                        <p class="host-name">Hosted by {{ meeting.hostName }}</p>
+                        <p class="meeting-duration">Duration: {{ meeting.duration }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="meeting-right">
+                <button (click)="joinMeeting(meeting.callId)">Join now</button>
+            </div>
+        </div>
+
+        <ng-template #noMeetingTemplate>
+            <p>No meetings are ongoing.</p>
+        </ng-template>
     </div>
 </div>
