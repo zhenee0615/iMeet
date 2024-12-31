@@ -17,8 +17,8 @@
   .video-container {
     position: relative;
     width: 100%;
-    aspect-ratio: 16 / 9; 
-    // height: 100%;
+    // aspect-ratio: 16 / 9; 
+    height: 100%;
     // max-height: calc(100vh - 375px);
 
     .hidden-video {
@@ -67,7 +67,7 @@
 
     video {
       width: 100%;
-      max-height: calc(100vh - 225px);
+      // max-height: calc(100vh - 225px);
       height: 100%;
       object-fit: cover;
       z-index: 1;
