@@ -86,7 +86,7 @@ export class MeetingService {
         settings_override: {
           audio: { mic_default_on: true, default_device: "speaker" },
           video: { camera_default_on: true,
-            target_resolution: { width: 1920, height: 1080 } },
+            target_resolution: { width: 640, height: 480 } },
         },
       },
     });

@@ -1,5 +1,8 @@
 <div class="participant-container">
-  <div class="video-container">
+  <div 
+    class="video-container" 
+    [ngClass]="{'limited-height': totalParticipants > 4}"
+  >
     <video
       #videoElement
       [ngClass]="{ 'hidden-video': !isCameraOn(participant) }"

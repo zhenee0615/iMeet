@@ -7,6 +7,7 @@
   padding: 10px;
   width: 100%;
   height: 100%;
+  position: relative;
 
   video,
   audio {
@@ -17,9 +18,7 @@
   .video-container {
     position: relative;
     width: 100%;
-    // aspect-ratio: 16 / 9; 
     height: 100%;
-    // max-height: calc(100vh - 375px);
 
     .hidden-video {
       display: none;
@@ -69,8 +68,8 @@
       width: 100%;
       // max-height: calc(100vh - 225px);
       height: 100%;
-      object-fit: cover;
       z-index: 1;
+      object-fit: cover;
     }
 
     .name-container {
@@ -102,5 +101,9 @@
     audio {
       display: none;
     }
+  }
+
+  .video-container.limited-height {
+    max-height: calc((100vh - 230px) / 3);
   }
 }

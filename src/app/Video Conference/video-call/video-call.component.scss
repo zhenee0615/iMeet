@@ -29,12 +29,12 @@ section {
   .participants {
     flex: 1;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
     gap: 0.3rem;
-    padding: 1.25rem 2rem;
-    overflow-y: auto;
+    padding: 0.8rem 2rem;
     place-items: center;
+    overflow: hidden;
   }
 
   .one-participant {
@@ -58,7 +58,7 @@ section {
   .more-participants-container {
     padding: 10px;
     aspect-ratio : 1 / 1;
-    height: 70%;
+    height: 80%;
     border-radius: 50%;
     
     .more-participants {
@@ -107,6 +107,27 @@ section {
           background-color: #ff0000;
         }
       }
+    }
+  }
+
+  .participants-info {
+    position: absolute;
+    right: 1.3rem;
+    bottom: 1.4rem;
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+
+    mat-icon {
+      color: white;
+      font-size: 1.5rem;
+      margin-right: 0.5rem;
+    }
+
+    span {
+      color: white;
+      font-size: 1.2rem;
+      font-weight: bold;
     }
   }
 }

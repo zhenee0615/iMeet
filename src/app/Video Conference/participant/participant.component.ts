@@ -17,6 +17,7 @@ export class ParticipantComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('audioElement') audioElement!: ElementRef<HTMLAudioElement>;
   @Input() participant!: StreamVideoParticipant;
   @Input() cameraStatus$!: Observable<{ [key: string]: boolean }>;
+  @Input() totalParticipants!: number;
   private userSubscription?: Subscription;
   private cameraStatusSubscription!: Subscription;
   private userService = inject(UserService);
@@ -98,13 +99,6 @@ export class ParticipantComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   isCameraOn(participant: StreamVideoParticipant): boolean {
-    // const tracks = participant.videoStream?.getVideoTracks();
-    // if (tracks && tracks.length > 0) {
-    //   const videoTrack = tracks[0];
-    //   // console.log(participant.name, videoTrack);
-    //   return videoTrack.enabled && videoTrack.readyState === 'live';
-    // }
-    // return false;
     return this.cameraStatus[participant.userId] ?? false;
   }
 
