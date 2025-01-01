@@ -58,6 +58,7 @@ import { getStorage, provideStorage } from '@angular/fire/storage';
 import { getFunctions, provideFunctions } from '@angular/fire/functions';
 import { VideoCallComponent } from './Video Conference/video-call/video-call.component';
 import { ParticipantComponent } from './Video Conference/participant/participant.component';
+import { FaceRecognitionDialogComponent } from './User Portal/Dashboard/Group/face-recognition-dialog/face-recognition-dialog.component';
 
 @NgModule({
   declarations: [
@@ -93,7 +94,8 @@ import { ParticipantComponent } from './Video Conference/participant/participant
     ProfileDialogComponent,
     AddPostDialogComponent,
     VideoCallComponent,
-    ParticipantComponent
+    ParticipantComponent,
+    FaceRecognitionDialogComponent
   ],
   imports: [
     BrowserModule,

@@ -1,7 +1,6 @@
 <div class="group-component">
     <div *ngIf="activeTab === 'General'">
         <div *ngIf="isLoading" class="loading">Loading posts...</div>
-
         <div *ngFor="let post of postList" class="post-card">
             <div class="post-header-section">
                 <div class="post-header">

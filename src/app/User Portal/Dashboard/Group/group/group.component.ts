@@ -11,13 +11,7 @@ import { AddPostDialogComponent } from '../add-post-dialog/add-post-dialog.compo
 import { MatDialog } from '@angular/material/dialog';
 import { MeetingService } from '../../../../Services/meeting.service';
 import { Subscription } from 'rxjs';
-
-interface Meeting {
-  callId: string;
-  hostId: string;
-  isOngoing: boolean;
-  createdAt: any;
-}
+import { FaceRecognitionDialogComponent } from '../face-recognition-dialog/face-recognition-dialog.component';
 
 @Component({
   selector: 'app-group',
@@ -83,7 +77,6 @@ export class GroupComponent implements OnInit {
       this.meetingSubscription = this.meetingService
         .getOngoingMeetings$(this.groupId!)
         .subscribe(async (meetings) => {
-          // For each meeting, fetch host user info once.
           const enriched = await Promise.all(
             meetings.map(async (m) => {
               const user = await this.userService.getUserById(m.hostId);
@@ -117,26 +110,20 @@ export class GroupComponent implements OnInit {
     const diffMs = now.getTime() - meeting.createdAtDate.getTime();
     const totalSeconds = Math.floor(diffMs / 1000);
 
-    // Break down into days/hours/minutes/seconds
-    const days = Math.floor(totalSeconds / 86400); // 86400 = 24*60*60
+    const days = Math.floor(totalSeconds / 86400);
     const remainderAfterDays = totalSeconds % 86400;
-    const hours = Math.floor(remainderAfterDays / 3600); // 3600 = 60*60
+    const hours = Math.floor(remainderAfterDays / 3600);
     const remainderAfterHours = remainderAfterDays % 3600;
     const minutes = Math.floor(remainderAfterHours / 60);
     const seconds = remainderAfterHours % 60;
 
-    // Format logic
     if (days > 0) {
-      // More than 1 day
       meeting.duration = `${days} days ${hours} hours`;
     } else if (hours > 0) {
-      // More than 1 hour but less than 1 day
       meeting.duration = `${hours} hours ${minutes} min`;
     } else if (minutes > 0) {
-      // More than 1 minute but less than 1 hour
       meeting.duration = `${minutes} min ${seconds} seconds`;
     } else {
-      // Less than 1 minute => seconds
       meeting.duration = `${seconds} seconds`;
     }
   });
@@ -259,8 +246,25 @@ export class GroupComponent implements OnInit {
   }
 
   joinMeeting(callId: string) {
-    this.meetingService.joinMeeting(callId, this.sidePanel.userData?.uid!, this.sidePanel.userData?.fullName!).then(() => {
-      this.router.navigate(['/meeting', this.sidePanel.userData?.uid!, this.groupId, callId]);
+    // this.meetingService.joinMeeting(callId, this.sidePanel.userData?.uid!, this.sidePanel.userData?.fullName!).then(() => {
+    //   this.router.navigate(['/meeting', this.sidePanel.userData?.uid!, this.groupId, callId]);
+    // });
+    this.dialog.open(FaceRecognitionDialogComponent, {
+      data: {
+        userDetails: {
+          profilePicUrl: this.sidePanel.userData?.profilePicUrl,
+          name: this.sidePanel.userData?.fullName,
+          gender: this.sidePanel.userData?.gender || 'Not specified',
+          email: this.sidePanel.userData?.email,
+          contact: this.sidePanel.userData?.contactNumber || 'Not specified',
+        },
+      },
+    }).afterClosed().subscribe((result) => {
+      if (result?.success) {
+        this.meetingService.joinMeeting(callId, this.sidePanel.userData?.uid!, this.sidePanel.userData?.fullName!).then(() => {
+          this.router.navigate(['/meeting', this.sidePanel.userData?.uid!, this.groupId, callId]);
+        });
+      }
     });
   }
 }

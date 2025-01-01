@@ -97,13 +97,6 @@ export class VideoCallComponent implements OnDestroy, OnInit {
   }
 
   toggleMicrophone() {
-    // if (!this.call) return;
-    // if (this.call.microphone.enabled) {
-    //   this.micOn = false;
-    // } else {
-    //   this.micOn = true;
-    // }
-    // this.call.microphone.toggle();
     if (!this.call) return;
     this.uid = this.route.snapshot.paramMap.get('uid');
     if (this.call.microphone.enabled) {

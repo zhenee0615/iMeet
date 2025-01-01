@@ -24,15 +24,12 @@ interface MenuItem {
 
 export class SidePanelComponent {
   isHandset$: Observable<boolean>;
-  showUserHeader: boolean = false;
   userData: User | null = null;
   activeTab$: BehaviorSubject<string> = new BehaviorSubject('General');
-  authService = inject(AuthService);
+  private authService = inject(AuthService);
   private meetingService = inject(MeetingService);
   items: MenuItem[] = [];
-  private userDataSubject = new BehaviorSubject<User | null>(null);
-  userData$ = this.userDataSubject.asObservable();
-  groupId: string | null = null;
+  private groupId: string | null = null;
 
   constructor(private breakpointObserver: BreakpointObserver, private router: Router, private userService: UserService, private route: ActivatedRoute) {
     this.isHandset$ = this.breakpointObserver.observe(Breakpoints.Handset)
