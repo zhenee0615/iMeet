@@ -74,7 +74,7 @@ export class FaceRecognitionDialogComponent implements OnDestroy {
       didOpen: () => Swal.showLoading(),
     });
 
-    fetch('https://facerecognition-ysz8.onrender.com', {
+    fetch('https://facerecognition-ysz8.onrender.com/face_recognition', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
