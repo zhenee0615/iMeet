@@ -74,9 +74,9 @@ export class FaceRecognitionDialogComponent implements OnDestroy {
       didOpen: () => Swal.showLoading(),
     });
 
-    fetch('https://facial-recognition-production-848a.up.railway.app/face_recognition', {
+    fetch('https://facial-recognition-muiw.onrender.com/face_recognition', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': "https://i-meet-xi.vercel.app" },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         image_data: base64Image,
         profile_image_url: this.data.userDetails.profilePicUrl,
