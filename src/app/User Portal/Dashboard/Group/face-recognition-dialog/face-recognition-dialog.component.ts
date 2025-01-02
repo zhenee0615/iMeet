@@ -74,7 +74,7 @@ export class FaceRecognitionDialogComponent implements OnDestroy {
       didOpen: () => Swal.showLoading(),
     });
 
-    fetch('https://facial-recognition-muiw.onrender.com/face_recognition', {
+    fetch('https://imeet-face-recognition.onrender.com/face_recognition', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -92,17 +92,15 @@ export class FaceRecognitionDialogComponent implements OnDestroy {
             text: 'Identity verified successfully.',
             icon: 'success',
           }).then(() => {
-            this.showUserDetails = true; // Show user details section
+            this.showUserDetails = true;
           });
         } else if (response.error) {
-          // Handle errors such as anti-spoofing failure or other issues
           Swal.fire({
             title: 'Verification Failed',
             text: response.error,
             icon: 'error',
           });
         } else {
-          // If the face does not match, show an error
           Swal.fire({
             title: 'Failed!',
             text: 'Face verification failed. Please try again.',
