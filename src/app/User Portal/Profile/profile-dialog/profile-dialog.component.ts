@@ -4,6 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { User } from '../../../Models/user';
 import { UserService } from '../../../Services/user.service';
 import { NotificationService } from '../../../Services/notification.service';
+import { FaceDetectionService } from '../../../Services/face-detection.service';
 
 @Component({
   selector: 'app-profile-dialog',
@@ -16,6 +17,7 @@ export class ProfileDialogComponent {
   profileForm: FormGroup;
   userService = inject(UserService);
   notificationService = inject(NotificationService);
+  private faceDetectionService = inject(FaceDetectionService);
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public userData: User,
@@ -34,20 +36,11 @@ export class ProfileDialogComponent {
         Validators.pattern(/^\d+$/)
       ])
     });
+    this.faceDetectionService.loadFaceApiScript();
   }
 
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
-      const file = input.files[0];
-      const reader = new FileReader();
-
-      reader.onload = () => {
-        this.profilePicUrl = reader.result as string; // Update the displayed image
-      };
-
-      reader.readAsDataURL(file);
-    }
+  async onFileSelected(event: Event): Promise<void> {
+    this.profilePicUrl = await this.faceDetectionService.onFileSelected(event);
   }
 
   async onSave(): Promise<void> {

@@ -52,18 +52,31 @@
           </div>
 
           <div class="form-group">
-                <mat-form-field appearance="outline" class="w-100">
-                  <mat-label>Password</mat-label>
-                  <input
-                    matInput
-                    [type]="hidePassword ? 'password' : 'text'"
-                    formControlName="password" [(ngModel)]="password" name="password"
-                    required
-                  />
-            <mat-icon matSuffix class="visibility-icon" (click)="togglePasswordVisibility()">{{ hidePassword ? 'visibility_off' : 'visibility' }}
-            </mat-icon>
-                </mat-form-field>
-              </div>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Password</mat-label>
+              <input
+                matInput
+                [type]="hidePassword ? 'password' : 'text'"
+                formControlName="password" [(ngModel)]="password" name="password"
+                required
+              />
+              <mat-icon matSuffix class="visibility-icon" (click)="togglePasswordVisibility()">{{ hidePassword ? 'visibility_off' : 'visibility' }}
+              </mat-icon>
+            </mat-form-field>
+          </div>
+
+          <div class="form-group recaptcha-form" *ngIf="!isSignUpMode">
+            <div class="recaptcha-wrapper">
+              <ngx-recaptcha2
+                #captchaElem
+                [siteKey]="siteKey"
+                formControlName="recaptcha"
+                (success)="handleCaptchaSuccess($event)"
+                (error)="handleCaptchaError($event)"
+                (expire)="handleCaptchaExpire()"
+              ></ngx-recaptcha2>
+            </div>
+          </div>
 
           <div *ngIf="isSignUpMode" class="form-group">
             <mat-form-field appearance="outline" class="w-100">
@@ -106,14 +119,14 @@
           </button>
         </form>
 
-        <p class="d-flex flex-row py-2 mb-0 text-dark">
-          {{
-          isSignUpMode
-          ? "Already have an account?"
-          : "Don't have an account?"
-          }}&#160;
-          <a (click)="toggleMode()">{{ isSignUpMode ? "Login" : "Sign Up Now" }}</a>
-        </p>
+        <p class="py-2 mb-0 text-dark label">
+  {{
+    isSignUpMode
+      ? "Already have an account?"
+      : "Don't have an account?"
+  }}
+  <a (click)="toggleMode()" class="end-link">{{ isSignUpMode ? "Login" : "Sign Up Now" }}</a>
+</p>
       </div>
     </div>
   </div>

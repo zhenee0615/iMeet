@@ -7,6 +7,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 import { NotificationService } from '../../Services/notification.service';
 import { FaceDetectionService } from '../../Services/face-detection.service';
+import Swal from 'sweetalert2';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -24,6 +26,7 @@ export class LoginComponent {
   gender: string = '';
   contactNumber: string = '';
   errorMessage: string = '';
+  siteKey: string = '6LeIE60qAAAAAKsDC4jNe4hrjS5JvUNxhqNGns-6';
   profilePicUrl: string = "profile_signup_icon.png";
   isSignUpMode: boolean = false; 
   hidePassword: boolean = true;
@@ -31,6 +34,7 @@ export class LoginComponent {
   loginForm: FormGroup;
   signUpForm: FormGroup;
   user: User | null = null;
+  recaptchaResponse: string | null = null;
   private userService = inject(UserService);
   private authService = inject(AuthService);
   private faceDetectionService = inject(FaceDetectionService);
@@ -45,6 +49,7 @@ export class LoginComponent {
         Validators.required,
         Validators.minLength(6)
       ]),
+      recaptcha: new FormControl('', [Validators.required])
     });
 
     this.signUpForm = new FormGroup({
@@ -76,6 +81,28 @@ export class LoginComponent {
     this.profilePicUrl = await this.faceDetectionService.onFileSelected(event);
   }
 
+  handleCaptchaSuccess(response: string): void {
+    this.recaptchaResponse = response;
+  }
+
+  handleCaptchaError(error: any): void {
+    Swal.fire({
+        title: 'Error!',
+        text: error,
+        icon: 'error',
+      });
+    this.recaptchaResponse = null;
+  }
+
+  handleCaptchaExpire(): void {
+    Swal.fire({
+      title: 'Error!',
+      text: 'Captcha expired.',
+      icon: 'error',
+    });
+    this.recaptchaResponse = null;
+  }
+
   onSubmit() {
     if (this.isSignUpMode) {
       this.onSignUp();
@@ -85,13 +112,21 @@ export class LoginComponent {
   }
 
   async onLogin() {
-    const { email, password } = this.loginForm.value;
+    const { email, password, recaptcha } = this.loginForm.value;
     if (!this.email || !this.password) {
       this.notificationService.showNotification("Email and password are required. Please try again.", 'error-snackbar');
+      return;
+    } else if (this.loginForm.invalid) {
+      Swal.fire({
+        title: 'Error!',
+        text: 'Please complete the form and solve the reCAPTCHA.',
+        icon: 'error',
+      });
       return;
     }
     try {
       await firstValueFrom(this.authService.login(email, password));
+
       await new Promise(resolve => setTimeout(resolve, 300));
 
       const user = await firstValueFrom(this.userService.getUserSignal());
@@ -222,14 +257,6 @@ export class LoginComponent {
     this.fullName = '';
     this.gender = '';
     this.contactNumber = '';
-  }
-
-  getEmail() {
-    return this.loginForm.get('email');
-  }
-
-  getPassword() {
-    return this.loginForm.get('password');
   }
 
   togglePasswordVisibility() {

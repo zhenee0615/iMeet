@@ -11,10 +11,10 @@ import { UserService } from './user.service';
 })
   
 export class AuthService {
-  firebaseAuth = inject(Auth);
   currentUser: User | null = null;
   userList: User[] = [];
   private userService = inject(UserService);
+  firebaseAuth = inject(Auth);
 
   constructor(private router: Router) {
     onAuthStateChanged(this.firebaseAuth, (firebaseUser) => {

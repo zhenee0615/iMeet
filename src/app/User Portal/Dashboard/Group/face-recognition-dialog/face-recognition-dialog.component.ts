@@ -12,7 +12,6 @@ export class FaceRecognitionDialogComponent implements OnDestroy {
   @ViewChild('video', { static: true }) videoElement!: ElementRef<HTMLVideoElement>;
   videoStream: MediaStream | null = null;
   showUserDetails = false;
-  capturedImage: string | null = null;
 
   constructor(
     private dialogRef: MatDialogRef<FaceRecognitionDialogComponent>,
@@ -52,7 +51,7 @@ export class FaceRecognitionDialogComponent implements OnDestroy {
     this.videoStream = null;
   }
 
-  captureAndVerify(): void {
+  async captureAndVerify(): Promise<void> {
     const video = this.videoElement.nativeElement;
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
@@ -64,18 +63,12 @@ export class FaceRecognitionDialogComponent implements OnDestroy {
 
     const cropWidth = 480;
     const cropHeight = 480;
-
     canvas.width = cropWidth;
     canvas.height = cropHeight;
-
     const startX = (video.videoWidth - cropWidth) / 2;
     const startY = (video.videoHeight - cropHeight) / 2;
-
     ctx.drawImage(video, startX, startY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
-
     const base64Image = canvas.toDataURL('image/png').split(',')[1];
-
-    this.capturedImage = canvas.toDataURL('image/png');;
 
     Swal.fire({
       title: 'Verifying...',
@@ -84,50 +77,49 @@ export class FaceRecognitionDialogComponent implements OnDestroy {
       didOpen: () => Swal.showLoading(),
     });
 
-    fetch('http://localhost:5001/face_recognition', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        image_data: base64Image,
-        profile_image_url: this.data.userDetails.profilePicUrl,
-      }),
-    })
-      .then((res) => res.json())
-      .then((response) => {
-        Swal.close();
-        console.log(response);
+    try {
+      const response = await fetch('http://localhost:5001/face_recognition', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          image_data: base64Image,
+          profile_image_url: this.data.userDetails.profilePicUrl,
+        }),
+      });
 
-        if (response.match) {
-          Swal.fire({
-            title: 'Success!',
-            text: 'Identity verified successfully.',
-            icon: 'success',
-          }).then(() => {
-            this.showUserDetails = true;
-          });
-        } else if (response.error) {
-          Swal.fire({
-            title: 'Verification Failed',
-            text: response.error,
-            icon: 'error',
-          });
-        } else {
-          Swal.fire({
-            title: 'Failed!',
-            text: 'Face verification failed. Please try again.',
-            icon: 'error',
-          });
-        }
-      })
-      .catch((err) => {
-        Swal.close();
-        console.error('Error during face verification:', err);
+      const resultJson = await response.json();
+      console.log(resultJson);
+      Swal.close();
+      if (resultJson.match) {
         Swal.fire({
-          title: 'Error!',
-          text: 'An error occurred during verification. Please try again later.',
+          title: 'Success!',
+          text: 'Identity verified successfully.',
+          icon: 'success',
+        }).then(() => {
+          this.showUserDetails = true;
+        });
+      } else if (!resultJson.match) {
+        Swal.fire({
+          title: 'Verification Failed',
+          text: "Detected unauthorised person...Now allowed to enter this meeting!",
           icon: 'error',
         });
+      } else if (resultJson.error) {
+        Swal.fire({
+          title: 'Failed!',
+          text: 'Face verification failed. Please try again.',
+          icon: 'error',
+        });
+      }
+    } catch (err) {
+      Swal.close();
+      console.error('Error during face verification:', err);
+      Swal.fire({
+        title: 'Error!',
+        text: 'An error occurred during verification. Please try again later.',
+        icon: 'error',
       });
+    }
   }
 
   enterMeeting(): void {

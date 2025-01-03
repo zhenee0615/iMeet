@@ -59,6 +59,7 @@ import { getFunctions, provideFunctions } from '@angular/fire/functions';
 import { VideoCallComponent } from './Video Conference/video-call/video-call.component';
 import { ParticipantComponent } from './Video Conference/participant/participant.component';
 import { FaceRecognitionDialogComponent } from './User Portal/Dashboard/Group/face-recognition-dialog/face-recognition-dialog.component';
+import { NgxCaptchaModule } from 'ngx-captcha';
 
 @NgModule({
   declarations: [
@@ -116,7 +117,8 @@ import { FaceRecognitionDialogComponent } from './User Portal/Dashboard/Group/fa
     MatTabsModule,
     MatOptionModule,
     MatTableModule,
-    AngularFireStorageModule
+    AngularFireStorageModule,
+    NgxCaptchaModule
   ],
   providers: [
     provideAnimationsAsync(),
@@ -132,7 +134,7 @@ import { FaceRecognitionDialogComponent } from './User Portal/Dashboard/Group/fa
       }
     },
     provideFirebaseApp(() => initializeApp({ projectId: "imeetproject", appId: "1:380268675238:web:945419d9d33567e7c23467", storageBucket: "imeetproject.firebasestorage.app", apiKey: "AIzaSyC1VlArwNGn7SeDNgihtVUpF9wFG0DDU3E", authDomain: "imeetproject.firebaseapp.com", messagingSenderId: "380268675238", measurementId: "G-82CVB0ZMTB" })),
-    provideFunctions(() => getFunctions())
+    provideFunctions(() => getFunctions()),
   ],
   bootstrap: [AppComponent]
 })
