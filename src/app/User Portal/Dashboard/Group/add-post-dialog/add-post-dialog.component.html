@@ -17,13 +17,12 @@
                 <p>Drag and drop here</p>
                 <p>or</p>
                 <label class="browse-label">
-                <input type="file" (change)="onFileSelected($event)" multiple hidden />
-                <a href="#" class="browse-link">browse</a>
+                    <input #fileInput type="file" (change)="onFileSelected($event)" multiple hidden />
+                    <a class="browse-link" (click)="triggerFileInput(fileInput, $event)">browse</a>
                 </label>
             </div>
         </div>
 
-            <!-- Display selected files -->
         <div *ngIf="selectedFiles.length > 0" class="file-list">
             <div *ngFor="let file of selectedFiles; let i = index" class="file-item">
                 <div class="d-flex align-items-center">

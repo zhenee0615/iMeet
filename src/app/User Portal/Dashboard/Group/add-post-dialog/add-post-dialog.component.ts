@@ -93,6 +93,12 @@ export class AddPostDialogComponent {
   removeFile(index: number) {
     this.selectedFiles.splice(index, 1);
   }
+
+  triggerFileInput(fileInput: HTMLInputElement, event: Event): void {
+    event.preventDefault();
+    fileInput.click();
+  }
+
   
   async uploadFiles(): Promise<{ name: string; url: string }[]> {
     const uploadedFiles = await Promise.all(
@@ -100,7 +106,6 @@ export class AddPostDialogComponent {
         const filePath = `attachments/${Date.now()}_${file.name}`;
         const storageRef = ref(this.storage, filePath);
 
-        // Upload file and get its URL
         const uploadResult = await uploadBytes(storageRef, file);
         const downloadURL = await getDownloadURL(uploadResult.ref);
 
