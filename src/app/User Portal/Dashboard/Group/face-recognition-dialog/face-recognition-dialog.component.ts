@@ -12,6 +12,7 @@ export class FaceRecognitionDialogComponent implements OnDestroy {
   @ViewChild('video', { static: true }) videoElement!: ElementRef<HTMLVideoElement>;
   videoStream: MediaStream | null = null;
   showUserDetails = false;
+  capturedImage: string | null = null;
 
   constructor(
     private dialogRef: MatDialogRef<FaceRecognitionDialogComponent>,
@@ -40,7 +41,7 @@ export class FaceRecognitionDialogComponent implements OnDestroy {
       .catch((err) => {
         Swal.fire({
           title: 'Error!',
-          text: 'Failed to access camera.',
+          text: 'Unable to access the camera. Please check your settings.',
           icon: 'error',
         });
       });
@@ -61,11 +62,20 @@ export class FaceRecognitionDialogComponent implements OnDestroy {
       return;
     }
 
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+    const cropWidth = 480;
+    const cropHeight = 480;
 
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    canvas.width = cropWidth;
+    canvas.height = cropHeight;
+
+    const startX = (video.videoWidth - cropWidth) / 2;
+    const startY = (video.videoHeight - cropHeight) / 2;
+
+    ctx.drawImage(video, startX, startY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
+
     const base64Image = canvas.toDataURL('image/png').split(',')[1];
+
+    this.capturedImage = canvas.toDataURL('image/png');;
 
     Swal.fire({
       title: 'Verifying...',
@@ -74,7 +84,7 @@ export class FaceRecognitionDialogComponent implements OnDestroy {
       didOpen: () => Swal.showLoading(),
     });
 
-    fetch('https://imeet-face-recognition.onrender.com/face_recognition', {
+    fetch('http://localhost:5001/face_recognition', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -85,6 +95,7 @@ export class FaceRecognitionDialogComponent implements OnDestroy {
       .then((res) => res.json())
       .then((response) => {
         Swal.close();
+        console.log(response);
 
         if (response.match) {
           Swal.fire({
