@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { addDoc, collection, collectionData, deleteDoc, doc, Firestore, query, setDoc, where } from '@angular/fire/firestore';
+import { addDoc, collection, collectionData, deleteDoc, doc, Firestore, getDocs, query, setDoc, updateDoc, where } from '@angular/fire/firestore';
 import { BehaviorSubject, map, Observable } from 'rxjs';
 import { StreamVideoClient, Call } from '@stream-io/video-client';
 import { SignJWT } from 'jose';
@@ -69,6 +69,38 @@ export class MeetingService {
     return callId;
   }
 
+  // async joinMeeting(callId: string, userId: string, fullName: string): Promise<void> {
+  //   const token = await this.generateUserToken(userId);
+
+  //   this.client = StreamVideoClient.getOrCreateInstance({
+  //     apiKey: 'zrwqew8gkfrb',
+  //     user: { id: userId, name: fullName },
+  //     token,
+  //   });
+
+  //   const call = this.client.call('default', callId);
+
+  //   await call.join({
+  //     create: false,
+  //     data: {
+  //       settings_override: {
+  //         audio: { mic_default_on: true, default_device: "speaker" },
+  //         video: { camera_default_on: true,
+  //           target_resolution: { width: 640, height: 480 } },
+  //       },
+  //     },
+  //   });
+  //   await call.camera.enable();
+  //   await call.microphone.enable();
+  //   const participantDocRef = doc(this.firestore, `calls/${callId}/participants/${userId}`);
+  //   await setDoc(participantDocRef, {
+  //     isCameraOn: true,
+  //     isMicOn: true,
+  //     userId: userId,
+  //     fullName: fullName,
+  //   });
+  //   this.callSubject.next(call);
+  // }
   async joinMeeting(callId: string, userId: string, fullName: string): Promise<void> {
     const token = await this.generateUserToken(userId);
 
@@ -85,20 +117,25 @@ export class MeetingService {
       data: {
         settings_override: {
           audio: { mic_default_on: true, default_device: "speaker" },
-          video: { camera_default_on: true,
-            target_resolution: { width: 640, height: 480 } },
+          video: {
+            camera_default_on: true,
+            target_resolution: { width: 640, height: 480 },
+          },
         },
       },
     });
     await call.camera.enable();
     await call.microphone.enable();
-    const participantDocRef = doc(this.firestore, `calls/${callId}/participants/${userId}`);
-    await setDoc(participantDocRef, {
+
+    const participantCollectionRef = collection(this.firestore, 'participants');
+    await addDoc(participantCollectionRef, {
       isCameraOn: true,
       isMicOn: true,
       userId: userId,
+      callId: callId,
       fullName: fullName,
     });
+
     this.callSubject.next(call);
   }
 
@@ -110,26 +147,46 @@ export class MeetingService {
     }
   }
 
-  updateParticipantStatus(callId: string, userId: string, isCameraOn: boolean, isMicOn: boolean) {
-    const participantDocRef = doc(this.firestore, `calls/${callId}/participants/${userId}`);
-    return setDoc(participantDocRef, { isCameraOn, isMicOn }, { merge: true });
+  async updateParticipantStatus(callId: string, userId: string, isCameraOn: boolean, isMicOn: boolean) {
+    const participantsCollection = collection(this.firestore, 'participants');
+    const q = query(participantsCollection, where('callId', '==', callId), where('userId', '==', userId));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      const participantDocRef = querySnapshot.docs[0].ref;
+      await updateDoc(participantDocRef, { isCameraOn, isMicOn });
+    } else {
+      throw new Error(`Participant with userId: ${userId} and callId: ${callId} not found.`);
+    }
   }
 
-  removeParticipant(callId: string, userId: string) {
-    const participantDocRef = doc(this.firestore, `calls/${callId}/participants/${userId}`);
-    return deleteDoc(participantDocRef);
+  async removeParticipant(callId: string, userId: string): Promise<void> {
+    const participantsCollection = collection(this.firestore, 'participants');
+    const q = query(participantsCollection, where('callId', '==', callId), where('userId', '==', userId));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      const participantDocRef = querySnapshot.docs[0].ref; 
+      await deleteDoc(participantDocRef); 
+    } else {
+      throw new Error(`Participant with userId: ${userId} and callId: ${callId} not found.`);
+    }
   }
 
   getParticipantsStatus$(callId: string): Observable<{ [key: string]: { isCameraOn: boolean, isMicOn: boolean } }> {
-    const participantsCollectionRef = collection(this.firestore, `calls/${callId}/participants`);
-    return collectionData(participantsCollectionRef).pipe(
-      map((data: any) => data.reduce((acc: any, participant: any) => {
-        acc[participant.userId] = {
-          isCameraOn: participant.isCameraOn,
-          isMicOn: participant.isMicOn,
-        };
-        return acc;
-      }, {}))
+    const participantsCollectionRef = collection(this.firestore, 'participants');
+    const q = query(participantsCollectionRef, where('callId', '==', callId));
+    
+    return collectionData(q).pipe(
+      map((data: any[]) =>
+        data.reduce((acc: { [key: string]: { isCameraOn: boolean, isMicOn: boolean } }, participant: any) => {
+          acc[participant.userId] = {
+            isCameraOn: participant.isCameraOn,
+            isMicOn: participant.isMicOn,
+          };
+          return acc;
+        }, {})
+      )
     );
   }
 }
