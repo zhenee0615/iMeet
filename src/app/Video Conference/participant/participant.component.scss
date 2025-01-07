@@ -38,6 +38,7 @@
         aspect-ratio : 1 / 1;
         object-fit: cover;
         border-radius: 50%;
+        background: white;
         z-index: 3;
       }
     }
@@ -66,7 +67,6 @@
 
     video {
       width: 100%;
-      // max-height: calc(100vh - 225px);
       height: 100%;
       z-index: 1;
       object-fit: cover;

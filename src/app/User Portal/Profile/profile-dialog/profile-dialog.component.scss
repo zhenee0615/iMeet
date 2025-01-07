@@ -1,3 +1,9 @@
+mat-dialog-content,
+div[mat-dialog-content] {
+  flex-grow: 1;
+  max-height: unset;
+}
+
 .mat-form-field {
   width: 100%;
 }

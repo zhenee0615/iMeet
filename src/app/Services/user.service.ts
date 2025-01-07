@@ -3,7 +3,9 @@ import { Firestore, addDoc, collection, collectionData, getDocs, query, updateDo
 import { BehaviorSubject, Observable } from 'rxjs';
 import { User } from '../Models/user';
 import { NotificationService } from './notification.service';
-import { getDownloadURL, getStorage, ref, uploadString } from 'firebase/storage';
+import { getDownloadURL, getStorage, ref, uploadString, StorageReference, deleteObject } from 'firebase/storage';
+import { User as FirebaseUser } from 'firebase/auth'; 
+import { getAuth } from '@angular/fire/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -83,5 +85,19 @@ export class UserService {
 
   clearUser(): void {
     this.userSignal.next(null);
+  }
+
+  getStorageRefFromUrl(fileUrl: string): StorageReference {
+    const storage = getStorage();
+    const filePath = decodeURIComponent(fileUrl.split('/o/')[1].split('?')[0]);
+    return ref(storage, filePath);
+  }
+
+  async deleteProfileImageFromStorage(storageRef: StorageReference): Promise<void> {
+    await deleteObject(storageRef);
+  }
+
+  getCurrentFirebaseUser(): FirebaseUser | null {
+    return getAuth().currentUser;
   }
 }

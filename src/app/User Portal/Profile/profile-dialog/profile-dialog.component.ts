@@ -5,6 +5,9 @@ import { User } from '../../../Models/user';
 import { UserService } from '../../../Services/user.service';
 import { NotificationService } from '../../../Services/notification.service';
 import { FaceDetectionService } from '../../../Services/face-detection.service';
+import { getDocs, query, where } from 'firebase/firestore';
+import { firstValueFrom } from 'rxjs';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-profile-dialog',
@@ -26,10 +29,7 @@ export class ProfileDialogComponent {
     this.profilePicUrl = this.userData.profilePicUrl;
     this.profileForm = new FormGroup({
       fullName: new FormControl(userData.fullName || '', Validators.required),
-      email: new FormControl(userData.email || '', [
-        Validators.required,
-        Validators.email
-      ]),
+      email: new FormControl({value: userData.email, disabled: true}),
       gender: new FormControl(userData.gender || '', Validators.required),
       contactNumber: new FormControl(userData.contactNumber || '', [
         Validators.required,
@@ -45,9 +45,22 @@ export class ProfileDialogComponent {
 
   async onSave(): Promise<void> {
     if (this.validateForm()) {
-      const updatedUser: User = { uid: this.userData.uid, profilePicUrl: this.profilePicUrl ,...this.profileForm.value };
-
       try {
+        let profileUrl = this.userData.profilePicUrl;
+        if (this.profilePicUrl !== this.userData.profilePicUrl) {
+          if (this.userData.profilePicUrl) {
+            const storageRef = this.userService.getStorageRefFromUrl(this.userData.profilePicUrl);
+            await this.userService.deleteProfileImageFromStorage(storageRef);
+          }
+          profileUrl = await this.userService.uploadProfileImageToStorage(this.profilePicUrl);
+        }
+
+        const updatedUser = {
+          uid: this.userData.uid,
+          ...this.profileForm.value,
+          profilePicUrl: profileUrl,
+        };
+        
         await this.userService.updateUser(updatedUser);
         this.dialogRef.close(updatedUser);
         this.notificationService.showNotification(
@@ -64,19 +77,11 @@ export class ProfileDialogComponent {
   }
 
   validateForm(): boolean {
-    const { fullName, email, gender, contactNumber } = this.profileForm.value;
+    const { fullName, gender, contactNumber } = this.profileForm.value;
 
-    if (!fullName || !email || !gender || !contactNumber) {
+    if (!fullName || !gender || !contactNumber) {
       this.notificationService.showNotification(
         "All fields are required. Please fill in all fields.",
-        "error-snackbar"
-      );
-      return false;
-    }
-
-    if (!this.validateEmail(email)) {
-      this.notificationService.showNotification(
-        "Invalid email format. Please enter a valid email.",
         "error-snackbar"
       );
       return false;
@@ -91,11 +96,6 @@ export class ProfileDialogComponent {
     }
 
     return true;
-  }
-
-  validateEmail(email: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
   }
 
   validateContactNumber(contactNumber: string): boolean {

@@ -116,10 +116,10 @@ export class LoginComponent {
     if (!this.email || !this.password) {
       this.notificationService.showNotification("Email and password are required. Please try again.", 'error-snackbar');
       return;
-    } else if (this.loginForm.invalid) {
+    } else if (!this.recaptchaResponse) {
       Swal.fire({
         title: 'Error!',
-        text: 'Please complete the form and solve the reCAPTCHA.',
+        text: 'Please solve the reCAPTCHA.',
         icon: 'error',
       });
       return;
@@ -132,8 +132,13 @@ export class LoginComponent {
       const user = await firstValueFrom(this.userService.getUserSignal());
 
       if (user) {
+        Swal.fire({
+          title: 'Login Successful',
+          text: 'You have successfully login to your account',
+          icon: 'success',
+          timer: 2000
+        });
         await this.router.navigate(['/user', user.uid]);
-        window.location.reload();
       } else {
         this.notificationService.showNotification("Unable to retrieve user data. Please try logging in again.", 'error-snackbar');
       }

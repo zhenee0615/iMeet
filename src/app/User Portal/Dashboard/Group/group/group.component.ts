@@ -246,9 +246,6 @@ export class GroupComponent implements OnInit {
   }
 
   joinMeeting(callId: string) {
-    // this.meetingService.joinMeeting(callId, this.sidePanel.userData?.uid!, this.sidePanel.userData?.fullName!).then(() => {
-    //   this.router.navigate(['/meeting', this.sidePanel.userData?.uid!, this.groupId, callId]);
-    // });
     this.dialog.open(FaceRecognitionDialogComponent, {
       data: {
         userDetails: {

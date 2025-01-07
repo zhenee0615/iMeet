@@ -15,11 +15,6 @@ export class FeatureHighlightsComponent {
       description: 'Our platform leverages advanced facial recognition technology to ensure that only authorized participants can join virtual events. This eliminates the risk of unauthorized access, ensuring that your meetings and events remain secure and private. Facial recognition serves as an additional layer of authentication, enhancing trust and reliability in every interaction.'
     },
     {
-      image: 'attendance_system.jpg',
-      title: 'Automated Attendance',
-      description: 'Say goodbye to manual attendance tracking. Our automated attendance system uses facial recognition to instantly record participant presence during events. This feature not only saves time but also minimizes errors in attendance tracking, providing event organizers with accurate and reliable attendance reports that can be exported for analysis or compliance.'
-    },
-    {
       image: 'enhance_security.jpg',
       title: 'Enhanced Security',
       description: 'Security is at the core of our platform. With end-to-end encryption and facial recognition-based authentication, your virtual events are protected against unauthorized access and data breaches. This feature ensures that sensitive discussions and information shared during events remain confidential, giving you peace of mind.'

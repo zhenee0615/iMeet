@@ -90,13 +90,6 @@ export class ParticipantComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   isMicOn(participant: StreamVideoParticipant): boolean {
-    // const tracks = participant.audioStream?.getAudioTracks();
-    // if (tracks && tracks.length > 0) {
-    //   const audioTrack = tracks[0];
-    //   const isAudioEnabled: boolean = audioTrack.enabled && audioTrack.readyState === 'live';
-    //   return isAudioEnabled;
-    // }
-    // return false;
     return this.micOn ?? false; 
   }
 

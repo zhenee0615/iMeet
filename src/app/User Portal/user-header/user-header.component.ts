@@ -79,6 +79,8 @@ export class UserHeaderComponent implements OnInit, OnDestroy {
   editProfile() {
     const dialogRef = this.dialog.open(ProfileDialogComponent, {
       width: '500px',
+      minHeight: 'auto',
+      height : 'auto',
       data: { ...this.userData }
     });
 

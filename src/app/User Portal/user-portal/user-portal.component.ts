@@ -10,11 +10,9 @@ import { NotificationService } from '../../Services/notification.service';
 })
   
 export class UserPortalComponent implements OnInit{
-  notificationService = inject(NotificationService);
 
   ngOnInit(): void {
     if (!localStorage.getItem('hasLoggedIn')) {
-      this.notificationService.showNotification("You have successfully logged in!", "success-snackbar");
       localStorage.setItem('hasLoggedIn', 'true');
     }
   }

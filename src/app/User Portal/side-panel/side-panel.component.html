@@ -27,7 +27,7 @@
         </div>
     </mat-nav-list>
   </mat-sidenav>
-  <mat-sidenav-content autosize="true" class="content">
+  <mat-sidenav-content autosize="true" class="content" [style.margin-left]="(isHandset$ | async) ? '0px' : '65px'" [style.width]="(isHandset$ | async) ? '100%' : 'calc(100vw - 65px)'">
     <mat-toolbar>
       @if (isHandset$ | async) {
         <button

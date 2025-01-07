@@ -38,15 +38,9 @@ export class PostService {
     await addDoc(commentsCollection, comment);
   }
 
-  // async addPost(post: any): Promise<void> {
-  //   const postsCollection = collection(this.firestore, 'posts');
-
-  //   await addDoc(postsCollection, post);
-  // }
   async addPost(post: any, attachments: { name: string; url: string }[]): Promise<void> {
     const postsCollection = collection(this.firestore, 'posts');
 
-    // Add the main post document
     const postDocRef = await addDoc(postsCollection, {
       content: post.content,
       dateCreated: post.dateCreated,
@@ -55,7 +49,6 @@ export class PostService {
       userId: post.userId,
     });
 
-    // Add attachments collection inside the created post
     if (attachments) {
       for (const attachment of attachments) {
         const attachmentsCollection = collection(postDocRef, 'attachments');

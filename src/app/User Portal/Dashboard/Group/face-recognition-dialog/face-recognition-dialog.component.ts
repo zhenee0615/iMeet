@@ -88,9 +88,15 @@ export class FaceRecognitionDialogComponent implements OnDestroy {
       });
 
       const resultJson = await response.json();
-      console.log(resultJson);
       Swal.close();
-      if (resultJson.match) {
+      if (resultJson.error) {
+        Swal.fire({
+          title: 'Failed!',
+          text: resultJson.error,
+          icon: 'error',
+        });
+      } else if (resultJson.match) {
+        this.toggleCamera();
         Swal.fire({
           title: 'Success!',
           text: 'Identity verified successfully.',
@@ -101,16 +107,10 @@ export class FaceRecognitionDialogComponent implements OnDestroy {
       } else if (!resultJson.match) {
         Swal.fire({
           title: 'Verification Failed',
-          text: "Detected unauthorised person...Now allowed to enter this meeting!",
+          text: "Detected unauthorised person...Not allowed to enter this meeting!",
           icon: 'error',
         });
-      } else if (resultJson.error) {
-        Swal.fire({
-          title: 'Failed!',
-          text: 'Face verification failed. Please try again.',
-          icon: 'error',
-        });
-      }
+      } 
     } catch (err) {
       Swal.close();
       console.error('Error during face verification:', err);

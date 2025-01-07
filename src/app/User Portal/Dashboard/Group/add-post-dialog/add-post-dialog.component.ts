@@ -43,12 +43,11 @@ export class AddPostDialogComponent {
         const newPost = {
           title: this.postForm.get('title')?.value,
           content: this.postForm.get('content')?.value,
-          dateCreated: new Date().toISOString(),
+          dateCreated: new Date(),
           groupId: this.data?.groupId || 'unknown_group',
           userId: this.data?.userId || 'unknown_user',
         };
 
-        // Upload files and get attachment details
         if (this.selectedFiles) {
           const attachments = await this.uploadFiles();
           await this.postService.addPost(newPost, attachments);

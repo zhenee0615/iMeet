@@ -51,12 +51,6 @@ export class SidePanelComponent {
             activeImage: 'group_icon_hover.png',
           },
           {
-            name: 'Calendar',
-            route: `/user/${this.userData.uid}/schedule`,
-            defaultImage: 'calendar_icon.png',
-            activeImage: 'calendar_icon_hover.png',
-          },
-          {
             name: 'Profile',
             route: `/user/${this.userData.uid}/profile`,
             defaultImage: 'profile_icon.png',

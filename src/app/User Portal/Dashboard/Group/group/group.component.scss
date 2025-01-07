@@ -108,13 +108,6 @@
                 align-items: flex-start;
                 margin-bottom: 0.8rem;
 
-                // .comment-avatar img {
-                //   width: 32px;
-                //   height: 32px;
-                //   border-radius: 50%;
-                //   margin-right: 0.8rem;
-                // }
-
                 .comment-content {
                     flex: 1;
 
@@ -232,7 +225,6 @@
     }
 
     .members-section {
-
         table {
             width: 100%;
             background-color: transparent;
@@ -262,6 +254,7 @@
                     border-radius: 50%;
                     object-fit: cover;
                     object-position: center;
+                    background-color: white;
                 }
 
                 .member-name {
@@ -276,11 +269,11 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 1.5rem !important; // uniform spacing
+        padding: 1.5rem !important;
 
         .meeting-left {
             display: flex;
-            flex-direction: column; // stack title on top, avatar below
+            flex-direction: column; 
 
             .meeting-title {
                 margin: 0;
