@@ -12,6 +12,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MeetingService } from '../../../../Services/meeting.service';
 import { Subscription } from 'rxjs';
 import { FaceRecognitionDialogComponent } from '../face-recognition-dialog/face-recognition-dialog.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-group',
@@ -258,9 +259,26 @@ export class GroupComponent implements OnInit {
       },
     }).afterClosed().subscribe((result) => {
       if (result?.success) {
-        this.meetingService.joinMeeting(callId, this.sidePanel.userData?.uid!, this.sidePanel.userData?.fullName!).then(() => {
+        Swal.fire({
+        title: 'Joining Meeting...',
+        html: 'Please wait while we connect you.',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading(),
+      });
+
+      this.meetingService.joinMeeting(callId, this.sidePanel.userData?.uid!, this.sidePanel.userData?.fullName!)
+        .then(() => {
+          Swal.close();
           this.router.navigate(['/meeting', this.sidePanel.userData?.uid!, this.groupId, callId]);
-        });
+        })
+        .catch((error) => {
+          Swal.close(); 
+          Swal.fire({
+            icon: 'error',
+            title: 'Failed to Join Meeting',
+            text: 'An error occurred while joining the meeting. Please try again.',
+          });
+        })
       }
     });
   }
