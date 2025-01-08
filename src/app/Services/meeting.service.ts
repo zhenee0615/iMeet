@@ -138,21 +138,21 @@ export class MeetingService {
       create: false,
       data: {
         settings_override: {
-          audio: { mic_default_on: true, default_device: "speaker" },
+          audio: { mic_default_on: false, default_device: "speaker" },
           video: {
-            camera_default_on: true,
+            camera_default_on: false,
             target_resolution: { width: 640, height: 480 },
           },
         },
       },
     });
-    await call.camera.enable();
-    await call.microphone.enable();
+    await call.camera.disable();
+    await call.microphone.disable();
 
     const participantCollectionRef = collection(this.firestore, 'participants');
     await addDoc(participantCollectionRef, {
-      isCameraOn: true,
-      isMicOn: true,
+      isCameraOn: false,
+      isMicOn: false,
       userId: userId,
       callId: callId,
       fullName: fullName,

@@ -29,8 +29,8 @@ export class VideoCallComponent implements OnDestroy, OnInit {
   groupId: string | null = null;
   uid: string | null = null;
   meetingStartTime?: Date;
-  micOn = true;
-  cameraOn = true;
+  micOn = false;
+  cameraOn = false;
   groupName = ''; 
   meetingDuration = '';
 
@@ -124,8 +124,10 @@ export class VideoCallComponent implements OnDestroy, OnInit {
 
     if (this.call.camera.enabled) {
       await this.call.camera.disable();
+      console.log("1");
       this.cameraOn = false;
     } else {
+      console.log("2");
       await this.call.camera.enable();
       this.cameraOn = true;
     }

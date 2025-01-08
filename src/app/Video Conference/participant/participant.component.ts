@@ -23,8 +23,8 @@ export class ParticipantComponent implements OnInit, AfterViewInit, OnDestroy {
   private userService = inject(UserService);
   randomColor: string = '';
   profilePicUrl: string = '';
-  cameraOn = true;
-  micOn = true;
+  cameraOn = false;
+  micOn = false;
 
   private unbindVideoElement?: () => void;
   private unbindAudioElement?: () => void;
