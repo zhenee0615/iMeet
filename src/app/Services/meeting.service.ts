@@ -65,6 +65,8 @@ export class MeetingService {
         members: [{ user_id: userId, role: 'admin' }]
       },
     });
+    await call.camera.disable();
+    await call.microphone.disable();
     this.callSubject.next(call);
     return callId;
   }
@@ -77,14 +79,12 @@ export class MeetingService {
       const querySnapshot = await getDocs(q);
 
       if (querySnapshot.empty) {
-        console.log(`No meetings found with callId ${callId} in group ${groupId}.`);
         return;
       }
 
       for (const docSnapshot of querySnapshot.docs) {
         const docRef = doc(this.firestore, `groups/${groupId}/meetings/${docSnapshot.id}`);
         await deleteDoc(docRef);
-        console.log(`Meeting with callId ${callId} removed.`);
       }
     } catch (error) {
       console.error('Error removing meeting:', error);

@@ -6,7 +6,6 @@ import { Router, ActivatedRoute, NavigationStart } from '@angular/router';
 import Swal from 'sweetalert2';
 import { GroupService } from '../../Services/group.service';
 import { Group } from '../../Models/group';
-import { doc } from 'firebase/firestore';
 
 @Component({
   selector: 'app-video-call',
