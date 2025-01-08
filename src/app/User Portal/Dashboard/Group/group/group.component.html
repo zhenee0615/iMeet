@@ -1,6 +1,9 @@
 <div class="group-component">
     <div *ngIf="activeTab === 'General'">
         <div *ngIf="isLoading" class="loading">Loading posts...</div>
+        <div *ngIf="!isLoading && postList.length === 0" class="no-posts-message">
+            No post in this group
+        </div>
         <div *ngFor="let post of postList" class="post-card">
             <div class="post-header-section">
                 <div class="post-header">
@@ -140,8 +143,8 @@
             </div>
         </div>
 
-        <ng-template #noMeetingTemplate>
-            <p>No meetings are ongoing.</p>
-        </ng-template>
+        <div *ngIf="!isLoading && ongoingMeetings.length === 0" class="no-meetings-message">
+            No meetings are ongoing
+        </div>
     </div>
 </div>

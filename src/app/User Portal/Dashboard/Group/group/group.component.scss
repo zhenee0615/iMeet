@@ -320,3 +320,13 @@
         }
     }
 }
+
+.no-posts-message, .no-meetings-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 1.2rem;
+    color: #ffffff;
+    margin-top: 14rem;
+}
