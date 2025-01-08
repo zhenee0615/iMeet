@@ -12,7 +12,7 @@ export class FaceDetectionService {
 
   async loadFaceApiScript(): Promise<void> {
     if (document.querySelector('script[src="https://cdn.jsdelivr.net/npm/face-api.js/dist/face-api.min.js"]')) {
-      return; // Script already loaded
+      return; 
     }
 
     return new Promise((resolve, reject) => {
@@ -63,7 +63,7 @@ export class FaceDetectionService {
                 timer: 2000,
                 showConfirmButton: false,
               });
-              resolve(imageDataUrl); // Return the URL
+              resolve(imageDataUrl); 
             } else {
               reject('No face detected');
             }

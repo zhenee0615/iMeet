@@ -263,7 +263,7 @@ export class GroupComponent implements OnInit {
         title: 'Joining Meeting...',
         html: 'Please wait while we connect you.',
         allowOutsideClick: false,
-        didOpen: () => Swal.showLoading(),
+        didOpen: () => Swal.showLoading(null),
       });
 
       this.meetingService.joinMeeting(callId, this.sidePanel.userData?.uid!, this.sidePanel.userData?.fullName!)

@@ -74,7 +74,7 @@ export class FaceRecognitionDialogComponent implements OnDestroy {
       title: 'Verifying...',
       html: '<div class="spinner"></div>',
       allowOutsideClick: false,
-      didOpen: () => Swal.showLoading(),
+      didOpen: () => Swal.showLoading(null),
     });
 
     try {

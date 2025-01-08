@@ -89,7 +89,7 @@ export class SidePanelComponent {
           title: 'Starting Meeting...',
           html: 'Please wait while we set things up.',
           allowOutsideClick: false,
-          didOpen: () => Swal.showLoading(),
+          didOpen: () => Swal.showLoading(null),
         });
 
         const urlSegments = this.router.url.split('/').filter(segment => segment.length > 0);
