@@ -1,11 +1,12 @@
 import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { Call, StreamVideoParticipant } from '@stream-io/video-client';
 import { MeetingService } from '../../Services/meeting.service';
-import { Observable, Subscription } from 'rxjs';
-import { Router, ActivatedRoute } from '@angular/router';
+import { filter, firstValueFrom, Observable, Subscription } from 'rxjs';
+import { Router, ActivatedRoute, NavigationStart } from '@angular/router';
 import Swal from 'sweetalert2';
 import { GroupService } from '../../Services/group.service';
 import { Group } from '../../Models/group';
+import { doc } from 'firebase/firestore';
 
 @Component({
   selector: 'app-video-call',
@@ -24,6 +25,7 @@ export class VideoCallComponent implements OnDestroy, OnInit {
   private callSubscription!: Subscription;
   private groupSubscription!: Subscription;
   private meetingSubscription!: Subscription;
+  private routerEventsSubscription!: Subscription;
   groupId: string | null = null;
   uid: string | null = null;
   meetingStartTime?: Date;
@@ -57,7 +59,7 @@ export class VideoCallComponent implements OnDestroy, OnInit {
         .getOngoingMeetings$(this.groupId)
         .subscribe(async (meetings) => {
           if (meetings && meetings.length > 0) {
-            const localCallId = this.call?.id; // or this.call?.cid
+            const localCallId = this.call?.id;
             const myMeeting = meetings.find((m) => m.callId === localCallId);
 
             if (myMeeting) {
@@ -74,6 +76,12 @@ export class VideoCallComponent implements OnDestroy, OnInit {
           }
         });
     }
+
+    this.routerEventsSubscription = this.router.events
+      .pipe(filter(event => event instanceof NavigationStart))
+      .subscribe(async () => {
+        await this.cleanupMeeting();
+      });
   }
 
   private updateDuration() {
@@ -125,11 +133,17 @@ export class VideoCallComponent implements OnDestroy, OnInit {
     await this.meetingService.updateParticipantStatus(this.call.id, this.uid, this.cameraOn, this.micOn);
   }
 
-  leaveCall() {
+  async leaveCall() {
     this.groupId = this.route.snapshot.paramMap.get('groupId');
     this.uid = this.route.snapshot.paramMap.get('uid');
     if (this.call) {
-      this.call.leave();
+      await this.call.leave();
+
+      const participants = await firstValueFrom(this.meetingService.getParticipantsStatus$(this.call.id));
+      if (Object.keys(participants).length <= 1) {
+        await this.meetingService.deleteMeetingFromGroup(this.groupId!, this.call.id);
+      }
+      
       Swal.fire({
         title: 'Leaving Meeting...',
         didOpen: () => Swal.showLoading(null),
@@ -138,6 +152,19 @@ export class VideoCallComponent implements OnDestroy, OnInit {
       }).then(() => {
         this.router.navigate([`/user/${this.uid}/group/${this.groupId}`]);
       });
+    }
+  }
+
+  private async cleanupMeeting() {
+    this.groupId = this.route.snapshot.paramMap.get('groupId');
+    this.uid = this.route.snapshot.paramMap.get('uid');
+    if (this.call) {
+      await this.call.leave();
+
+      const participants = await firstValueFrom(this.meetingService.getParticipantsStatus$(this.call.id));
+      if (Object.keys(participants).length <= 1) {
+        await this.meetingService.deleteMeetingFromGroup(this.groupId!, this.call.id);
+      }
     }
   }
 

@@ -1,7 +1,7 @@
 <section class="contact-form pt-5 pb-3">
   <div class="container">
     <h2 class="text-center mb-4">Send Us a Message</h2>
-    <form (ngSubmit)="Submit()" #contactForm="ngForm">
+    <form (ngSubmit)="Submit(contactForm)" #contactForm="ngForm">
       <div class="mb-3">
         <label for="name" class="form-label">Name</label>
         <input

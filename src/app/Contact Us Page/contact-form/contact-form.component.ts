@@ -2,6 +2,8 @@ import { Component, inject } from '@angular/core';
 import emailjs, { EmailJSResponseStatus } from '@emailjs/browser';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from '../dialog/dialog.component';
+import Swal from 'sweetalert2';
+import { NgForm } from '@angular/forms';
 
 interface ContactForm {
   name: string;
@@ -23,12 +25,26 @@ export class ContactFormComponent {
     message: '',
   };
   
-  constructor(private dialog: MatDialog) {}
+  Submit(contactForm: NgForm) {
+    try {
+      emailjs
+        .send('service_8ost6he', 'template_m4h6xj4', { ...this.form }, {
+          publicKey: 'GkBgHVn_qm6w4aeXX',
+        })
+      contactForm.resetForm();
 
-  Submit() {
-    emailjs
-      .send('service_8ost6he', 'template_m4h6xj4', { ...this.form }, {
-        publicKey: 'GkBgHVn_qm6w4aeXX',
+      Swal.fire({
+        icon: 'success',
+        title: 'Feedback sent',
+        text: 'Your feedback have been sent to our team. We will review it as soon as possible.',
+        showConfirmButton: true,
       });
+    } catch {
+      Swal.fire({
+        title: 'Error!',
+        text: "An error occured, please try again.",
+        icon: 'error',
+      });
+    }
   }
 }

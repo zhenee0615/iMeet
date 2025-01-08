@@ -69,6 +69,28 @@ export class MeetingService {
     return callId;
   }
 
+  async deleteMeetingFromGroup(groupId: string, callId: string): Promise<void> {
+    const meetingsCollectionRef = collection(this.firestore, `groups/${groupId}/meetings`);
+    const q = query(meetingsCollectionRef, where('callId', '==', callId));
+
+    try {
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        console.log(`No meetings found with callId ${callId} in group ${groupId}.`);
+        return;
+      }
+
+      for (const docSnapshot of querySnapshot.docs) {
+        const docRef = doc(this.firestore, `groups/${groupId}/meetings/${docSnapshot.id}`);
+        await deleteDoc(docRef);
+        console.log(`Meeting with callId ${callId} removed.`);
+      }
+    } catch (error) {
+      console.error('Error removing meeting:', error);
+    }
+  }
+
   // async joinMeeting(callId: string, userId: string, fullName: string): Promise<void> {
   //   const token = await this.generateUserToken(userId);
 

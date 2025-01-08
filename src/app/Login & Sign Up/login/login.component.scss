@@ -172,7 +172,6 @@ section {
                 display: block;
                 color: #3294fd;
                 text-decoration: none;
-                cursor: pointer;
                 width: 130px;
                 text-wrap: wrap;
             
@@ -182,4 +181,8 @@ section {
             }
         }
     }
+}
+
+a {
+    cursor: pointer;
 }

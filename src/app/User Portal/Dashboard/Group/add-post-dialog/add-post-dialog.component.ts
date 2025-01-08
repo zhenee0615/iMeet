@@ -65,7 +65,20 @@ export class AddPostDialogComponent {
     const input = event.target as HTMLInputElement;
     if (input.files) {
       this.selectedFiles.push(...Array.from(input.files));
+      Swal.fire({
+        icon: 'success',
+        title: 'File uploaded',
+        text: 'File uploaded successfully!',
+        timer: 1000,
+        showConfirmButton: false,
+      });
+      return
     }
+    Swal.fire({
+      title: 'Error!',
+      text: "An error occured, please try again.",
+      icon: 'error',
+    });
   }
 
   onDragOver(event: DragEvent): void {
@@ -97,7 +110,6 @@ export class AddPostDialogComponent {
     event.preventDefault();
     fileInput.click();
   }
-
   
   async uploadFiles(): Promise<{ name: string; url: string }[]> {
     const uploadedFiles = await Promise.all(

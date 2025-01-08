@@ -196,7 +196,12 @@ export class LoginComponent {
 
   toggleMode() {
     this.isSignUpMode = !this.isSignUpMode;
-    this.clearForm();
+    if (this.isSignUpMode) {
+      this.signUpForm.reset();
+      this.profilePicUrl = 'profile_signup_icon.png';
+    } else {
+      this.loginForm.reset();
+    }
   }
 
   validateForm(): boolean {
