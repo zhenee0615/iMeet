@@ -1,0 +1,33 @@
+.user-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  
+  .left-section {
+    display: flex;
+    align-items: center;
+
+    .icon {
+      width: 1.5rem;
+      height: 1.5rem;
+      margin-right: 10px;
+    }
+
+    .title {
+      font-size: 16px;
+      font-weight: 500;
+    }
+  }
+
+  .right-section {
+    position: absolute;
+    top: 10px;
+    right: 2%;
+
+    button {
+      font-size: 14px;
+      padding: 5px 10px;
+    }
+  }
+}

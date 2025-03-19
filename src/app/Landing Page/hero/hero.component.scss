@@ -1,0 +1,35 @@
+.virtual-face-recognition {
+    width: 100%;
+    border-radius: 2rem;
+  }
+  
+  .description {
+    text-align: justify;
+    font-size: 1.2rem;
+  }
+  
+  .try-button {
+    border: none;
+    border-radius: 30px;
+    position: relative;
+    transition: 0.5s;
+    font-size: 1rem;
+  
+    .right-arrow {
+      opacity: 0;
+      transform: translateX(-50%);
+      transition: 0.3s ease;
+      position: absolute;
+    }
+  
+    &:hover {
+      background-color: black;
+      color: white;
+      padding-right: 30px !important;
+  
+      .right-arrow {
+        opacity: 1;
+        transform: translateX(30%);
+      }
+    }
+}

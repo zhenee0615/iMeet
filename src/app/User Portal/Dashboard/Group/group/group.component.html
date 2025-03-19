@@ -1,0 +1,150 @@
+<div class="group-component">
+    <div *ngIf="activeTab === 'General'">
+        <div *ngIf="isLoading" class="loading">Loading posts...</div>
+        <div *ngIf="!isLoading && postList.length === 0" class="no-posts-message">
+            No post in this group
+        </div>
+        <div *ngFor="let post of postList" class="post-card">
+            <div class="post-header-section">
+                <div class="post-header">
+                    <div class="post-avatar">
+                        <img [src]="post.profilePicUrl" alt="Avatar" />
+                    </div>
+                    <div class="post-info">
+                        <strong>{{ post.fullName }}</strong>
+                        <small>{{ post.dateCreated | date: 'dd-MM-yyyy hh:mm a' }}</small>
+                    </div>
+                </div>
+                <h3>{{ post.title }}</h3>
+                <p>{{ post.content }}</p>
+                <div class="post-attachments row d-flex flex-row" *ngIf="post.attachments && post.attachments.length > 0">
+                    <div *ngFor="let attachment of post.attachments" class="attachment-item col-4" (click)="openAttachment(attachment.url)">
+                        <mat-icon class="attachment-icon">description</mat-icon>
+                        <span>{{ attachment.name }}</span>
+                    </div>
+                </div>
+            </div>
+            <div 
+                *ngIf="post.comments && post.comments.length > 0" 
+                class="comments-section"
+            >
+                <div
+                *ngFor="let comment of post.comments.slice(0, showAllComments[post.postId] ? post.comments.length : 3)"
+                class="comment"
+                >
+                <div class="comment-avatar">
+                    <img [src]="comment.profilePicUrl" alt="Avatar" />
+                </div>
+                <div class="comment-content">
+                    <strong>{{ comment.fullName }}</strong>
+                    <small>{{ comment.dateCreated | date: 'dd-MM-yyyy hh:mm a' }}</small>
+                    <p>{{ comment.content }}</p>
+                </div>
+                </div>
+
+                <div *ngIf="post.comments.length > 3" class="view-more">
+                    <button mat-button (click)="toggleCommentsVisibility(post.postId)" class="view-hide-comment" [disableRipple]="true">
+                        {{ showAllComments[post.postId] ? 'Hide Comments' : 'View More Comments' }}
+                    </button>
+                </div>
+            </div>
+
+            <div class="reply-section">
+                <div 
+                    *ngIf="!showReplyInput[post.postId]" 
+                    class="reply-placeholder" 
+                    (click)="toggleReplyInput(post.postId)">
+                    Reply
+                </div>
+
+                <form 
+                    *ngIf="showReplyInput[post.postId]" 
+                    [formGroup]="commentForms[post.postId]" 
+                    (ngSubmit)="addComment(post.postId)" 
+                    class="reply-form">
+
+                    <mat-form-field appearance="outline" class="reply-input">
+                        <input 
+                            matInput 
+                            formControlName="content" 
+                            placeholder="Write a reply..." 
+                            (blur)="hideReplyInput(post.postId)"
+                            (input)="onInputChange(post.postId)"
+                        />
+                    </mat-form-field>
+                    <button 
+                        mat-icon-button 
+                        type="submit" 
+                        [disabled]="!commentForms[post.postId].valid"
+                    >
+                        <mat-icon>send</mat-icon>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <button mat-fab color="primary" class="add-post-btn" (click)="openAddPostDialog()">
+            <mat-icon>add</mat-icon>
+        </button>
+    </div>
+
+    <div *ngIf="activeTab === 'Members'" class="members-section">
+        <div *ngIf="isLoading" class="loading">Loading members...</div>
+
+        <table mat-table [dataSource]="membersList" class="mat-elevation-z8">
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef> Name </th>
+                <td mat-cell *matCellDef="let member">
+                    <div class="name-column">
+                        <img [src]="member.profilePicUrl" alt="Avatar" class="member-avatar" />
+                        <span class="member-name">{{ member.fullName }}</span>
+                    </div>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="dateJoined">
+            <th mat-header-cell *matHeaderCellDef> Date Joined </th>
+            <td mat-cell *matCellDef="let member"> {{ member.dateJoined | date: 'yyyy/MM/dd' }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="role">
+            <th mat-header-cell *matHeaderCellDef> Role </th>
+            <td mat-cell *matCellDef="let member">
+                {{ member.isAdmin ? 'Admin' : 'Member' }}
+            </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+    </div>
+
+    <div *ngIf="activeTab === 'Meetings'">
+        <div
+            *ngFor="let meeting of ongoingMeetings" 
+            class="post-card meeting-card"
+            >
+            <div class="meeting-left">
+                <h3 class="meeting-title">Ongoing Meeting</h3>
+                <div class="meeting-bottom">
+                    <div class="post-avatar">
+                        <img [src]="meeting.hostProfilePicUrl" alt="Host Avatar" />
+                    </div>
+
+                    <div class="meeting-details">
+                        <p class="host-name">Hosted by {{ meeting.hostName }}</p>
+                        <p class="meeting-duration">Duration: {{ meeting.duration }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="meeting-right">
+                <button (click)="joinMeeting(meeting.callId)">Join now</button>
+            </div>
+        </div>
+
+        <div *ngIf="!isLoading && ongoingMeetings.length === 0" class="no-meetings-message">
+            No meetings are ongoing
+        </div>
+    </div>
+</div>

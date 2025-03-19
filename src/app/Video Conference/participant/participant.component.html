@@ -1,0 +1,34 @@
+<div class="participant-container">
+  <div 
+    class="video-container" 
+    [ngClass]="{'limited-height': totalParticipants > 4}"
+  >
+    <video
+      #videoElement
+      [ngClass]="{ 'hidden-video': !isCameraOn(participant) }"
+      id="video-{{ participant.sessionId }}"
+      [attr.sessionId]="participant.sessionId"
+      autoplay
+    ></video>
+    <div 
+        class="img-wrapper"
+        *ngIf="!isCameraOn(participant)"
+        [style.background-color]="randomColor"
+    >
+        <img
+            [src]="profilePicUrl"
+            alt="{{ participant.name }}'s Profile Picture"
+            class="fallback-image"
+        />
+    </div>
+    <div class="mic-status">
+      <mat-icon>
+        {{ micOn ? 'mic' : 'mic_off' }}
+      </mat-icon>
+    </div>
+    <div class="name-container">
+      <p>{{ participant.name }}</p>
+    </div>
+    <audio #audioElement id="audio-{{ participant.sessionId }}"></audio>
+  </div>
+</div>

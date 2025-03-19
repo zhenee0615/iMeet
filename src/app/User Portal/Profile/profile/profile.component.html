@@ -1,0 +1,24 @@
+<div class="profile-container" *ngIf="user">
+  <div class="profile-details">
+    <div class="d-flex justify-content-center position-relative">
+      <img [src]="user.profilePicUrl" class="profile-picture position-absolute">
+    </div>
+    <div class="profile-row">
+      <label>Name:</label>
+      <span class="detail">{{ user.fullName || 'N/A' }}</span>
+    </div>
+    <div class="profile-row">
+      <label>Email:</label>
+      <span class="detail">{{ user.email || 'N/A' }}</span>
+    </div>
+    <div class="profile-row">
+      <label>Gender:</label>
+      <span class="detail">{{ user.gender || 'N/A' }}</span>
+    </div>
+    <div class="profile-row">
+      <label>Contact Number:</label>
+      <span class="detail">{{ user.contactNumber || 'N/A' }}</span>
+    </div>
+  </div>
+</div>
+<div *ngIf="!user" class="loading-message">Loading user data...</div>

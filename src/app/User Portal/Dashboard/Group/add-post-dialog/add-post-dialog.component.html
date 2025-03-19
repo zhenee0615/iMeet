@@ -1,0 +1,42 @@
+<h2 mat-dialog-title>New Post</h2>
+<mat-dialog-content class="content">
+    <form [formGroup]="postForm">
+        <mat-form-field appearance="outline" class="dialog-input">
+            <mat-label>Title</mat-label>
+            <input matInput formControlName="title" placeholder="Enter post title" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="dialog-input">
+            <mat-label>Content</mat-label>
+            <textarea matInput formControlName="content" rows="4" placeholder="Enter post content"></textarea>
+        </mat-form-field>
+
+        <div class="file-upload-container" (drop)="onDrop($event)" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)">
+            <div class="file-upload-content">
+                <mat-icon class="upload-icon">cloud_upload</mat-icon>
+                <p>Drag and drop here</p>
+                <p>or</p>
+                <label class="browse-label">
+                    <input #fileInput type="file" (change)="onFileSelected($event)" multiple hidden />
+                    <a class="browse-link" (click)="triggerFileInput(fileInput, $event)">browse</a>
+                </label>
+            </div>
+        </div>
+
+        <div *ngIf="selectedFiles.length > 0" class="file-list">
+            <div *ngFor="let file of selectedFiles; let i = index" class="file-item">
+                <div class="d-flex align-items-center">
+                    <mat-icon class="attachment-icon">description</mat-icon>
+                    <span>{{ file.name }}</span>
+                </div>
+                <button mat-icon-button color="warn" (click)="removeFile(i)">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+        </div>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-raised-button color="primary" (click)="submitPost()" [disabled]="postForm.invalid">Post</button>
+</mat-dialog-actions>

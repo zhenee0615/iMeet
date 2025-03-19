@@ -1,0 +1,332 @@
+.group-component {
+    display: flex;
+    flex-direction: column;
+    margin: 2rem 5rem 0 5rem;
+
+    .loading {
+        text-align: center;
+        font-size: 1.2rem;
+        color: #e0e0e0;
+    }
+
+    .post-card {
+        background-color: #333333;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s ease;
+        margin-bottom: 2rem;
+
+        .post-header-section {
+            padding: 1.5rem 1.5rem 0.8rem 1.5rem;
+            border-bottom: solid 2px #2d2a2a;
+
+            .post-header {
+                display: flex;
+                align-items: center;
+                margin-bottom: 1rem;
+
+                //   .post-avatar img {
+                //     width: 40px;
+                //     height: 40px;
+                //     border-radius: 50%;
+                //     margin-right: 1rem;
+                //   }
+
+                .post-info {
+                    display: flex;
+                    justify-content: space-between;
+                    width: 100%;
+
+                    strong {
+                        font-size: 1rem;
+                        color: #ffffff;
+                    }
+
+                    small {
+                        font-size: 0.9rem;
+                        color: #bbbbbb;
+                    }
+                }
+            }
+
+            .post-attachments {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+                margin-top: 1rem;
+
+                .attachment-item {
+                    display: flex;
+                    align-items: center;
+                    padding: 0.8rem 1rem;
+                    background-color: #2d2d2d;
+                    border-radius: 6px;
+                    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+                    color: #ffffff;
+                    margin-right: 1rem;
+                    cursor: pointer;
+
+                    .attachment-icon {
+                        margin-right: 0.8rem;
+                        color: #e53935;
+                        font-size: 1.5rem;
+                    }
+
+                    span {
+                        color: #42a5f5;
+                        text-decoration: none;
+                        font-weight: 500;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        display: -webkit-box;
+                        -webkit-line-clamp: 1;
+                                line-clamp: 1;
+                        -webkit-box-orient: vertical;
+                    }
+                }
+            }
+        }
+
+        h3 {
+            margin: 0 0 0.5rem;
+            font-size: 1.2rem;
+            color: #ffffff;
+        }
+
+        p {
+            font-size: 1rem;
+            color: #d3d3d3;
+            margin: 0.5rem 0;
+        }
+
+        .comments-section {
+            padding: 0.8rem 1.5rem;
+            border-bottom: solid 2px #2d2a2a;
+
+            .comment {
+                display: flex;
+                align-items: flex-start;
+                margin-bottom: 0.8rem;
+
+                .comment-content {
+                    flex: 1;
+
+                    strong {
+                        color: #ffffff;
+                        font-size: 0.9rem;
+                    }
+
+                    small {
+                        font-size: 0.75rem;
+                        color: #aaaaaa;
+                        margin-left: 0.5rem;
+                    }
+
+                    p {
+                        margin: 0.4rem 0 0;
+                        font-size: 0.9rem;
+                        color: #e0e0e0;
+                    }
+                }
+            }
+
+            .view-hide-comment {
+                color: #42a5f5;
+                font-size: 0.9rem;
+                text-transform: capitalize;
+                height: 25px;
+                padding: 0;
+            }
+        }
+
+        .reply-section {
+            display: flex;
+            align-items: center;
+            padding: 0.35rem 1.5rem;
+
+            .reply-placeholder {
+                color: #42a5f5;
+                font-size: 1rem;
+                cursor: pointer;
+                transition: color 0.3s ease;
+
+                &:hover {
+                    color: #ffffff;
+                    background-color: transparent;
+                }
+            }
+
+            .reply-form {
+                display: flex;
+                align-items: center;
+                width: 100%;
+
+                .reply-input {
+                    flex-grow: 1;
+                    margin-right: 0.5rem;
+                    color: white;
+
+                    mat-form-field {
+                        width: 100%;
+
+                        input {
+                            font-size: 1rem;
+                        }
+                    }
+                }
+
+                button mat-icon {
+                    color: #42a5f5;
+                }
+            }
+        }
+
+        .post-avatar, .comment-avatar {
+            border-radius: 50%;
+            overflow: hidden;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-right: 0.5rem;
+
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                object-position: center;
+            }
+        }
+
+        .post-avatar {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        .comment-avatar {
+            width: 2rem;
+            height: 2rem;
+        }
+    }
+
+    .add-post-btn {
+        position: fixed;
+        bottom: 1.5rem;
+        right: 1.5rem;
+        z-index: 10000;
+        background-color: #42a5f5;
+        color: white;
+        border-radius: 50%;
+
+        &:hover {
+            background-color: #2196f3;
+        }
+    }
+
+    .members-section {
+        table {
+            width: 100%;
+            background-color: transparent;
+
+            mat-header-cell {
+                font-weight: bold;
+                text-align: left;
+            }
+
+            mat-cell {
+                text-align: left;
+            }
+
+            .mat-mdc-header-cell, .mat-mdc-cell {
+                color: white;
+                padding: 0.8rem 0;
+            }
+
+            .name-column {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+
+                .member-avatar {
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    object-fit: cover;
+                    object-position: center;
+                    background-color: white;
+                }
+
+                .member-name {
+                    color: white;
+                    font-weight: bold;
+                }
+            }
+        }
+    }
+
+    .meeting-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem !important;
+
+        .meeting-left {
+            display: flex;
+            flex-direction: column; 
+
+            .meeting-title {
+                margin: 0;
+                margin-bottom: 0.8rem;
+                font-size: 1rem;
+                color: #ffffff;
+            }
+
+            .meeting-bottom {
+                display: flex;
+                align-items: center;
+
+                .meeting-details {
+                    margin-left: 1rem;
+
+                    .host-name {
+                    margin: 0.2rem 0;
+                    font-size: 1rem;
+                    color: #bbbbbb;
+                    }
+
+                    .meeting-duration {
+                    margin: 0;
+                    font-size: 0.9rem;
+                    color: #bbbbbb;
+                    }
+                }
+            }
+        }
+
+        .meeting-right {
+            button {
+                background-color: #006bc2;
+                color: #ffffff;
+                padding: 0.5rem 1rem;
+                border: none;
+                border-radius: 1.5rem;
+                cursor: pointer;
+
+                &:hover {
+                    background-color: #005295;
+                }
+            }
+        }
+    }
+}
+
+.no-posts-message, .no-meetings-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 1.2rem;
+    color: #ffffff;
+    margin-top: 14rem;
+}

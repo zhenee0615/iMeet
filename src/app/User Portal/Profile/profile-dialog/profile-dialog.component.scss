@@ -1,0 +1,83 @@
+mat-dialog-content,
+div[mat-dialog-content] {
+  flex-grow: 1;
+  max-height: unset;
+}
+
+.mat-form-field {
+  width: 100%;
+}
+
+.mat-dialog-actions {
+  margin-top: 16px;
+}
+
+.gender-selection {
+  margin: 0 0 1rem 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.gender-label {
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.gender-group {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.gender-radio {
+  margin-right: 0.5rem;
+}
+
+.profile-upload-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  .profile-image-wrapper {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .profile-image {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .profile-placeholder {
+      width: 100%;
+      height: 100%;
+      background-color: #ddd;
+    }
+
+    .upload-icon {
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      background-color: #007bff;
+      color: white;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+
+      mat-icon {
+        font-size: 1.5rem;
+      }
+    }
+  }
+}

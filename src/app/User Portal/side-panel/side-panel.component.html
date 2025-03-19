@@ -1,0 +1,55 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #drawer class="sidenav"
+      [mode]="(isHandset$ | async) ? 'over' : 'side'"
+      [opened]="(isHandset$ | async) === false"
+      [fixedInViewport]="false">
+    <mat-nav-list>
+        <div class="nav-section">
+            <div class="flex-grow-1">
+                <mat-list-item
+                    *ngFor="let item of items"
+                    [routerLink]="item.route"
+                    [class.active]="isRouteActive(item.route)"
+                    class="nav-item"
+                >
+                    <img
+                        [src]="isRouteActive(item.route) ? item.activeImage : item.defaultImage"
+                        alt="List item image"
+                        class="nav-icon"
+                    />
+                    <span>{{ item.name }}</span>
+                </mat-list-item>
+            </div>
+            <mat-list-item (click)="logout()" class="nav-item">
+                <img src="logout.png" alt="logout icon" class="logout-icon">
+                <span class="logout">Logout</span>
+            </mat-list-item>
+        </div>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content autosize="true" class="content" [style.margin-left]="(isHandset$ | async) ? '0px' : '65px'" [style.width]="(isHandset$ | async) ? '100%' : 'calc(100vw - 65px)'">
+    <mat-toolbar>
+      @if (isHandset$ | async) {
+        <button
+          type="button"
+          aria-label="Toggle sidenav"
+          mat-icon-button
+          (click)="drawer.toggle()">
+          <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+        </button>
+      }
+      <app-user-header></app-user-header>
+      <ng-container *ngIf="isGroupRoute()">
+        <div class="tab-header">
+          <mat-tab-group (selectedTabChange)="onTabChange($event)">
+            <mat-tab label="General"></mat-tab>
+            <mat-tab label="Meetings"></mat-tab>
+            <mat-tab label="Members"></mat-tab>
+          </mat-tab-group>
+          <button mat-raised-button color="primary" class="open-meeting-btn" (click)="openMeeting()">Create Meeting</button>
+        </div>
+      </ng-container>
+    </mat-toolbar>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

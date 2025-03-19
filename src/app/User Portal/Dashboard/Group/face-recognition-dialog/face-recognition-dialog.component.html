@@ -1,0 +1,28 @@
+<div class="dialog-content">
+  <h2 [hidden]="showUserDetails">Verify Your Identity</h2>
+  <div class="upper-section">
+    <div class="left-section" [ngClass]="{ 'camera-off': !videoStream,  'camera-on': videoStream}" [hidden]="showUserDetails">
+      <ng-container>
+        <video #video autoplay [hidden]="!videoStream"></video>
+      </ng-container>
+    </div>
+
+    <div class="right-section" *ngIf="showUserDetails">
+      <img [src]="data.userDetails.profilePicUrl" alt="Profile Picture" />
+      <p>{{ data.userDetails.name }}</p>
+    </div>
+  </div>
+
+  <div class="bottom-section">
+    <button 
+      mat-icon-button (click)="toggleCamera()" class="toggle-camera-btn"
+      [hidden]="showUserDetails"
+    >
+      <mat-icon>{{ !videoStream ? 'videocam_off' : 'videocam' }}</mat-icon>
+    </button>
+    <button mat-raised-button color="primary" (click)="captureAndVerify()" [disabled]="!videoStream" class="verify-button" [hidden]="showUserDetails">
+      Verify Now
+    </button>
+    <button mat-raised-button color="primary" [hidden]="!showUserDetails" class="enter-button" (click)="enterMeeting()">Enter Meeting</button>
+  </div>
+</div>

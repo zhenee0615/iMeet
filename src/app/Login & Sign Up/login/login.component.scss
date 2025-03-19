@@ -1,0 +1,188 @@
+section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 3rem;
+    background-color: #ececec;
+
+    .row {
+        background-color: #ececec;
+        width: 100%;
+
+        .left-panel {
+            border-radius: 10px 0 0 10px;
+            position: relative;
+            box-shadow: -2px 5px 12px rgba(0, 0, 0, 0.583);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+
+            // img{
+            //     display: block;
+            //     width: auto;
+            //     object-fit: cover;
+            //     border-radius: 10px 0 0 10px;
+            //     filter: brightness(70%);
+            // }
+        }
+    }
+
+    .login-container {
+        width: 100%;
+        border-radius: 0 10px 10px 0;
+        background-color: rgb(255, 255, 255);
+        box-shadow: 2px 5px 12px rgba(0, 0, 0, 0.583);
+
+        .profile-upload-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 1.5rem;
+
+            .profile-image-wrapper {
+                position: relative;
+                width: 128px;
+                height: 128px;
+
+                .profile-image,
+                .profile-placeholder {
+                    width: 100%;
+                    height: 100%;
+                    border-radius: 50%;
+                    background-color: #ccc;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    object-fit: cover;
+                    object-position: center;
+                }
+
+                .upload-icon {
+                    position: absolute;
+                    bottom: 0;
+                    right: 0;
+                    width: 36px;
+                    height: 36px;
+                    background-color: #ffffff;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+                cursor: pointer;
+
+                    mat-icon {
+                        font-size: 1.5rem;
+                        color: #007bff;
+                    }
+                }
+            }
+        }
+
+
+        .font {
+            display: block;
+            color: black;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+
+            .text-input {
+                width: 100%;
+                padding: 8px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+
+                &::placeholder {
+                    color: #909090;
+                }
+            }
+
+            .visibility-icon {
+                cursor: pointer;
+                color: rgba(0, 0, 0, 0.54);
+                transition: color 0.5s ease;
+                margin-left: -40px;
+
+                &:hover {
+                    color: rgba(0, 0, 0, 0.87);
+                }
+            }
+
+            input:-webkit-autofill {
+                box-shadow: 0 0 0px 1000px white inset;
+                -webkit-box-shadow: 0 0 0px 1000px white inset; 
+                -webkit-text-fill-color: black; 
+                transition: background-color 5000s ease-in-out 0s; 
+            }
+
+            .recaptcha-wrapper {
+                display: inline-block;
+                transform: scale(0.8);
+                transform-origin: left;
+                width: 80%;
+                margin: 0;
+                
+                iframe {
+                    width: 50%;
+                }
+            }
+        }
+
+        .form-group.recaptcha-form {
+            margin: 0;
+        }
+    
+        .login-button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        
+            &:hover {
+                background-color: #0056b3;
+            }
+        }
+
+        .label {
+            display: inline-flex;
+            align-items: center;
+            flex-wrap: nowrap; 
+            gap: 0.5rem; 
+            white-space: nowrap; 
+
+
+            .end-link {
+                text-decoration: none;
+                color: #3294fd;
+            }
+
+            .end-link:hover {
+                text-decoration: underline;
+            }
+
+            a {
+                display: block;
+                color: #3294fd;
+                text-decoration: none;
+                width: 130px;
+                text-wrap: wrap;
+            
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+}
+
+a {
+    cursor: pointer;
+}

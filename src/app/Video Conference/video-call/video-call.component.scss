@@ -1,0 +1,134 @@
+section {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #2d2a2a;
+
+  .video-call-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
+    padding: 0 2.5rem;
+    background-color: #3e3e3e;
+    border-bottom: 1px solid #666666;
+
+    .header-left {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: white;
+    }
+
+    .header-right {
+      font-size: 1rem;
+      font-weight: normal;
+      color: white;
+    }
+  }
+
+  .participants {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 0.3rem;
+    padding: 0.8rem 2rem;
+    place-items: center;
+    overflow: hidden;
+  }
+
+  .one-participant {
+    grid-template-columns: 1fr; 
+    grid-template-rows: 1fr;
+    padding: 0 8rem;
+  }
+
+  .two-participants {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: 1fr;
+    padding: 5rem 0;
+  }
+
+  .three-participants {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr;
+    padding: 8rem 0;
+  }
+
+  .more-participants-container {
+    padding: 10px;
+    aspect-ratio : 1 / 1;
+    height: 80%;
+    border-radius: 50%;
+    
+    .more-participants {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #403e3e;
+      color: white;
+      font-weight: bold;
+      font-size: 1.1rem;
+      border-radius: 50%;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .call-controls {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 15px;
+    background-color: #3e3e3e;
+    border-top: 1px solid #666666;
+
+    button {
+      display: flex;
+      align-items: center;
+      justify-content: center;   
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background-color: white;
+      transition: background-color 0.3s;
+
+      &:hover {
+        background-color: #d9d8d8;
+      }
+
+      &.leave-button {
+        background-color: #ff4d4d;
+        color: white;
+
+        &:hover {
+          background-color: #ff0000;
+        }
+      }
+    }
+  }
+
+  .participants-info {
+    position: absolute;
+    right: 1.3rem;
+    bottom: 1.4rem;
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+
+    mat-icon {
+      color: white;
+      font-size: 1.5rem;
+      margin-right: 0.5rem;
+    }
+
+    span {
+      color: white;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+  }
+}

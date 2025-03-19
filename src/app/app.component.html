@@ -1,0 +1,16 @@
+@defer {
+  <div *ngIf="isLoginPage() || !user">
+    <app-header></app-header>
+  </div>
+
+  <router-outlet></router-outlet>
+
+  <div *ngIf="isLoginPage() || !user">
+    <app-footer></app-footer>
+  </div>
+}
+@loading (minimum 0.5s) {
+  <div class="loading-container">
+    <img class="loading-icon" alt="loading..." src="loading.gif" />
+  </div>
+}

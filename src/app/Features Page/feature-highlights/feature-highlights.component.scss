@@ -1,0 +1,14 @@
+.text-justify {
+    text-align: justify;
+    font-size: 1.2rem;
+}
+  
+.feature:not(:last-child) {
+    margin-bottom: 6rem;
+}
+  
+.feature-img {
+    width: auto;
+    height: 400px;
+    object-fit: cover;
+}

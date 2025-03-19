@@ -1,0 +1,48 @@
+<section>
+    <div class="video-call-header">
+        <div class="header-left">{{ groupName }}</div>
+        <div class="header-right">{{ meetingDuration }}</div>
+    </div>
+  <div 
+    class="participants" 
+    [ngClass]="{
+        'one-participant': ((participants$ | async) || [] ).length == 1,
+        'two-participants': ((participants$ | async) || [] ).length == 2,
+        'three-participants': ((participants$ | async) || [] ).length == 3
+    }"
+  >
+    <ng-container *ngFor="let participant of (participants$ | async) | slice:0:8; trackBy: trackBySessionId">
+        <app-participant 
+            [participant]="participant" 
+            [participantStatus$]="participantsStatus$"
+            [totalParticipants]="((participants$ | async) || []).length"
+            style="width: 100%; height: 100%;"
+        >
+        </app-participant>
+    </ng-container>
+
+    <div class="more-participants-container">
+        <div 
+            class="more-participants" 
+            *ngIf="((participants$ | async) || [] ).length > 8"
+        >
+            +{{ ((participants$ | async) || [] ).length - 8 }} more
+        </div>
+    </div>
+  </div>
+  <div class="call-controls">
+    <button (click)="toggleMicrophone()">
+        <mat-icon>{{ micOn ? 'mic' : 'mic_off' }}</mat-icon>
+    </button>
+    <button (click)="toggleCamera()">
+        <mat-icon>{{ cameraOn ? 'videocam' : 'videocam_off' }}</mat-icon>
+    </button>
+    <button class="leave-button" (click)="leaveCall()">
+        <mat-icon>call_end</mat-icon>
+    </button>
+    <div class="participants-info">
+        <mat-icon>group</mat-icon>
+        <span>{{ ((participants$ | async) || []).length }}</span>
+    </div>
+  </div>
+</section>

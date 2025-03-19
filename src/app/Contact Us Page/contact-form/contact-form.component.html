@@ -1,0 +1,71 @@
+<section class="contact-form pt-5 pb-3">
+  <div class="container">
+    <h2 class="text-center mb-4">Send Us a Message</h2>
+    <form (ngSubmit)="Submit(contactForm)" #contactForm="ngForm">
+      <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input
+          type="text"
+          id="name"
+          placeholder="Name"
+          class="form-control"
+          [(ngModel)]="form.name"
+          name="name"
+          required
+          minlength="2"
+          #nameInput="ngModel"
+        />
+        <div *ngIf="nameInput.invalid && nameInput.touched" class="text-danger">
+          <small *ngIf="nameInput.errors?.['required']">Name is required.</small>
+          <small *ngIf="nameInput.errors?.['minlength']">Name must be at least 2 characters long.</small>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input
+          type="email"
+          id="email"
+          placeholder="Email Address"
+          class="form-control"
+          [(ngModel)]="form.email"
+          name="email"
+          required
+          email
+          #emailInput="ngModel"
+        />
+        <div *ngIf="emailInput.invalid && emailInput.touched" class="text-danger">
+          <small *ngIf="emailInput.errors?.['required']">Email is required.</small>
+          <small *ngIf="emailInput.errors?.['email']">Enter a valid email address.</small>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="message" class="form-label">Message</label>
+        <textarea
+          id="message"
+          placeholder="Message"
+          class="form-control"
+          rows="5"
+          [(ngModel)]="form.message"
+          name="message"
+          required
+          minlength="10"
+          #messageInput="ngModel"
+        ></textarea>
+        <div *ngIf="messageInput.invalid && messageInput.touched" class="text-danger">
+          <small *ngIf="messageInput.errors?.['required']">Message is required.</small>
+          <small *ngIf="messageInput.errors?.['minlength']">Message must be at least 10 characters long.</small>
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="contactForm.invalid"
+      >
+        Submit
+      </button>
+    </form>
+  </div>
+</section>

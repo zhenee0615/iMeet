@@ -1,0 +1,60 @@
+.logo {
+    width: 7rem;
+    cursor: pointer;
+  }
+  
+  .menu {
+    margin: 0;
+  }
+  
+  .login {
+    background-color: black;
+    color: white;
+    border-radius: 1.2rem;
+    border: none;
+    transition: box-shadow 0.3s ease-in-out;
+  
+    &:hover {
+      box-shadow: 0rem 0.25rem 0.35rem rgba(0, 0, 0, 0.2);
+      background-color: rgb(240, 240, 240);
+      color: black;
+    }
+  }
+  
+  .nav-link {
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+    color: black;
+    position: relative;
+  
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 3.5px;
+      background-color: rgb(124, 124, 124);
+      transition: width 0.3s ease, left 0.3s ease;
+    }
+  
+    &:hover {
+      color: rgb(124, 124, 124);
+    }
+  
+    &:hover::after {
+      width: 100%;
+      left: 0;
+      color: rgb(124, 124, 124);
+    }
+  
+    &.active::after {
+      width: 100%;
+      left: 0;
+    }
+  
+    &.active {
+      color: rgb(124, 124, 124);
+    }
+  }

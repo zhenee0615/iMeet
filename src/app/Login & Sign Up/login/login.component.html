@@ -1,0 +1,132 @@
+<section>
+  <div class="row p-5">
+    <div class="col-8 left-panel" 
+	    [ngStyle]="{
+        'background-image': isSignUpMode
+          ? 'url(signup_bg.jpg)'
+          : 'url(login_bg.jpeg)'
+      }">
+    </div>
+    <div class="col-4">
+      <div class="login-container px-4 py-3">
+        <h1 class="font text-center py-3">
+          {{ isSignUpMode ? "Sign Up" : "Login" }}
+        </h1>
+        <form [formGroup]="isSignUpMode ? signUpForm : loginForm" (ngSubmit)="onSubmit()">
+          <div *ngIf="isSignUpMode" class="profile-upload-container">
+            <div class="profile-image-wrapper">
+              <img
+                *ngIf="profilePicUrl; else placeholder"
+                [src]="profilePicUrl"
+                alt="Profile Picture"
+                class="profile-image"
+              />
+              <ng-template #placeholder>
+                <div class="profile-placeholder"></div>
+              </ng-template>
+
+              <label class="upload-icon">
+                <mat-icon>add</mat-icon>
+                <input
+                  type="file"
+                  accept="image/*"
+                  (change)="onFileSelected($event)"
+                  hidden
+                />
+              </label>
+            </div>
+          </div>
+
+          <div *ngIf="isSignUpMode" class="form-group">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Full Name</mat-label>
+              <input matInput type="text" formControlName="fullName" placeholder="Full Name" [(ngModel)]="fullName" name="fullName" required />
+            </mat-form-field>
+          </div>
+
+          <div class="form-group">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Email</mat-label>
+              <input matInput type="email" formControlName="email" placeholder="Email" [(ngModel)]="email" name="email" required />
+            </mat-form-field>
+          </div>
+
+          <div class="form-group">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Password</mat-label>
+              <input
+                matInput
+                [type]="hidePassword ? 'password' : 'text'"
+                formControlName="password" [(ngModel)]="password" name="password"
+                required
+              />
+              <mat-icon matSuffix class="visibility-icon" (click)="togglePasswordVisibility()">{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </mat-form-field>
+          </div>
+
+          <div class="form-group recaptcha-form" *ngIf="!isSignUpMode">
+            <div class="recaptcha-wrapper">
+              <ngx-recaptcha2
+                #captchaElem
+                [siteKey]="siteKey"
+                formControlName="recaptcha"
+                (success)="handleCaptchaSuccess($event)"
+                (error)="handleCaptchaError($event)"
+                (expire)="handleCaptchaExpire()"
+              ></ngx-recaptcha2>
+            </div>
+          </div>
+
+          <div *ngIf="isSignUpMode" class="form-group">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Confirm Password</mat-label>
+              <input
+                matInput
+                [type]="hideConfirmPassword ? 'password' : 'text'"
+                formControlName="confirmPassword" [(ngModel)]="confirmPassword" name="confirmPassword"
+                required
+              />
+              <mat-icon matSuffix class="visibility-icon" (click)="toggleConfirmPasswordVisibility()">
+                {{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}
+              </mat-icon>
+            </mat-form-field>
+          </div>
+
+          <div *ngIf="isSignUpMode" class="form-group">
+            <label class="font pb-1">Gender</label>
+            <div class="pb-2">
+              <mat-radio-group formControlName="gender" name="gender" [(ngModel)]="gender" class="d-flex">
+                <mat-radio-button value="Male" class="me-4">Male</mat-radio-button>
+                <mat-radio-button value="Female">Female</mat-radio-button>
+              </mat-radio-group>
+            </div>
+          </div>
+
+          <div *ngIf="isSignUpMode" class="form-group mb-2">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Contact Number</mat-label>
+              <input matInput type="text" formControlName="contactNumber" placeholder="Contact Number" [(ngModel)]="contactNumber" name="contactNumber" required />
+            </mat-form-field>
+          </div>
+
+          <div class="d-flex flex-row justify-content-end">
+            <a (click)="resetPassword()" *ngIf="!isSignUpMode" class="pb-3">Forgot Password?</a>
+          </div>
+
+          <button mat-raised-button color="primary" type="submit" class="w-100 mb-2 login-button">
+            {{ isSignUpMode ? "Sign Up" : "Login" }}
+          </button>
+        </form>
+
+        <p class="py-2 mb-0 text-dark label">
+          {{
+            isSignUpMode
+              ? "Already have an account?"
+              : "Don't have an account?"
+          }}
+          <a (click)="toggleMode()" class="end-link">{{ isSignUpMode ? "Login" : "Sign Up Now" }}</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

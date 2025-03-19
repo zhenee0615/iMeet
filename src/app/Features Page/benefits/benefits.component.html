@@ -1,0 +1,14 @@
+<section class="benefits bg-light py-5">
+    <div class="container">
+      <h2 class="text-center mb-4">Why Choose iMeet?</h2>
+      <div class="row">
+        <div *ngFor="let benefit of benefits" class="col-md-6 mb-5 benefit">
+          <div class="d-flex align-items-center mb-3 justify-content-center">
+            <i [class]="benefit.icon + ' text-primary me-3'" style="font-size: 2rem;"></i>
+            <h5 class="mb-0">{{ benefit.title }}</h5>
+          </div>
+          <p>{{ benefit.description }}</p>
+        </div>
+      </div>
+    </div>
+</section>

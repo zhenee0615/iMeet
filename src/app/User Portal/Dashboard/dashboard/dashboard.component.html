@@ -1,0 +1,19 @@
+<div class="p-4 group-list">
+    <div *ngIf="groups.length > 0; else noGroups" class="row">
+        <div *ngFor="let group of groups" class="group-card col-3" (click)="goToGroupDetails(group.groupId)">
+            <div class="row">
+                <div class="group-avatar col-3">
+                    {{ group.groupName | slice:0:2 | uppercase }}
+                </div>
+                <div class="group-info col">
+                    <h3 class="group-title">{{ group.groupName }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ng-template #noGroups>
+        <div class="no-group">
+            <p>You haven't joined any groups yet.</p>
+        </div>
+    </ng-template>
+</div>
